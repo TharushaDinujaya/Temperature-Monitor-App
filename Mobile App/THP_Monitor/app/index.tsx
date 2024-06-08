@@ -19,9 +19,16 @@ export default function Index() {
                     tabBarStyle: {
                       backgroundColor: 'transparent',
                       shadowColor: 'transparent',
+                      textTransform: 'none',
+                      marginTop: 0,
+                    },
+                    tabBarLabelStyle: {
+                        textTransform: 'none',
+                        marginBottom: -15,
+                        fontSize: 15,
                     },
                     tabBarIndicatorStyle: {
-                      backgroundColor: 'blue',
+                      backgroundColor: 'white',
                       height: 1,
                       width: '10%',
                       left: '20%',
@@ -42,11 +49,12 @@ export default function Index() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#2a2a2a',
+    backgroundColor: '#484B5B',
+    font: 'bold',
     color : 'white',
   },
   header: {
-    flex: 0.2,
+    flex: 0.075,
   },
 
 });

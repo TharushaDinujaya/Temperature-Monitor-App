@@ -5,7 +5,7 @@ export default function Header(props) {
     <View
       style={styles.header}
     >
-      <Text style={styles.headerText}>{props.location}</Text>
+      <Text style={styles.headerLocationText}>{props.location}</Text>
     </View>
   );
 }
@@ -13,12 +13,19 @@ export default function Header(props) {
 const styles = StyleSheet.create({
   header: {
     marginTop: 45,
-    marginBottom: 10,
+    marginBottom: 0,
   },
-  headerText : {
-    fontSize: 20,
+  headerMainText: { // for Application Name
+    fontSize: 25,
+    paddingBottom: 5,
     justifyContent: "center",
     textAlign: "center",
-    color : 'white',
+    color : '#D8D8D8',
+  },
+  headerLocationText : {
+    fontSize: 25,
+    justifyContent: "center",
+    textAlign: "center",
+    color : '#D8D8D8',
     }
 });
