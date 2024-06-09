@@ -8,6 +8,7 @@ import ForecastHourly from './components/ForecastHourly'
 import ForecastDaily from './components/ForecastDaily'
 import Details from './components/Details'
 import AirQuality from './components/AirQuality'
+import SunDetails from './components/SunDetails'
 
 export default function Weather(props) {
 
@@ -24,7 +25,13 @@ export default function Weather(props) {
   return (
       <ScrollView style={styles.container} >
         <View style={styles.weatherInfo} >
+            <Date />
+            <MainDetails mainData={mainData}/>
+            <ForecastHourly />
+            <ForecastDaily />
+            <Details />
             <AirQuality/>
+            <SunDetails/>
         </View>
       </ScrollView>
   );
