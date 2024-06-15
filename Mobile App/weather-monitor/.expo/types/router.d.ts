@@ -3,7 +3,7 @@ import type { ReactNode } from 'react';
 import type { TextProps, GestureResponderEvent } from 'react-native';
 
 export namespace ExpoRouter {
-  type StaticRoutes = `/` | `/..\hooks\DataProvider` | `/..\hooks\WeatherDataProvider` | `/Development` | `/Weather` | `/_sitemap` | `/components/AirQuality` | `/components/Date` | `/components/Details` | `/components/ForecastDaily` | `/components/ForecastDailyItem` | `/components/ForecastHourly` | `/components/ForecastHourlyItem` | `/components/GaugeMeter` | `/components/Icon` | `/components/Location` | `/components/MainDetails` | `/components/SunDetails` | `/components/SunIndicator` | `/mainComponents/Footer` | `/mainComponents/Header`;
+  type StaticRoutes = `/` | `/Development` | `/Weather` | `/_sitemap` | `/components/AirQuality` | `/components/Date` | `/components/Details` | `/components/ForecastDaily` | `/components/ForecastDailyItem` | `/components/ForecastHourly` | `/components/ForecastHourlyItem` | `/components/GaugeMeter` | `/components/Icon` | `/components/Location` | `/components/MainDetails` | `/components/SunDetails` | `/components/SunIndicator` | `/mainComponents/Footer` | `/mainComponents/Header`;
   type DynamicRoutes<T extends string> = never;
   type DynamicRouteTemplate = never;
 

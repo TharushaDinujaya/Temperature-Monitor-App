@@ -49,7 +49,7 @@ export default function ForecastDailyItem(props){
     })
     return(
         <View style={styles.container}>
-            <Text style={styles.day}>{props.forecastData.day}</Text>
+            <Text style={styles.day}>{props.forecastData.day === 'Today' ? 'Today' : getWeekdayFromUnixTimestamp(props.forecastData.day)}</Text>
             <View style={styles.icon}>
                 <Icon icon={props.forecastData.icon}/>
             </View>

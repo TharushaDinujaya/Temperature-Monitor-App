@@ -63,7 +63,7 @@ export default function ForecastHourlyItem(props){
                 style={styles.background}
             />
             <View style={styles.container}>
-                <Text style={styles.time}>{props.forecastData.time}</Text>
+                <Text style={styles.time}>{getTimeFromUnixTimestamp(props.forecastData.time)}</Text>
                 <View style={styles.icon}>
                     <Icon icon={props.forecastData.icon}/>
                 </View>
