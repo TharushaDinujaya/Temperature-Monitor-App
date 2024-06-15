@@ -10,37 +10,6 @@ const { width } = Dimensions.get('window');
 
 export default function AirQuality(props) {
     const colorScheme = useColorScheme();
-    const gaugeValue = 1;
-    const data = [
-    {
-      title: 'NO',
-      value: '0.76',
-    },
-    {
-      title: 'NO2',
-      value: '5.1',
-    },
-    {
-      title: 'O3',
-      value: '30.4',
-    },
-    {
-      title: 'SO3',
-      value: '0.78',
-    },
-    {
-      title: 'NH3',
-      value: '1.99',
-    },
-    {
-      title: 'PM2.5',
-      value: '4.54',
-    },
-    {
-      title: 'PM10',
-      value: '0.7',
-    },
-    ]
 
     const styles = StyleSheet.create({
       container: {
@@ -144,10 +113,10 @@ export default function AirQuality(props) {
 
               <View style={styles.conditions}>
                 <View style={styles.cellLeft}>
-                    <GaugeMeter value={gaugeValue} />
+                    <GaugeMeter value={props.gaugeValue} />
                 </View>
                 <View style={styles.cellRight}>
-                    {data.map((data) => (
+                    {props.airQualityData.map((data) => (
                       <Data key={data.title} detailsData={data} />
                     ))}
                 </View>

@@ -5,6 +5,14 @@ import Icon from './Icon';
 import { Colors } from '@/constants/Colors';
 import { DimensionsValues } from '@/constants/DimensionsValues';
 
+const getWeekdayFromUnixTimestamp = (unixTimestamp) => {
+    const milliseconds = unixTimestamp * 1000;
+    const date = new Date(milliseconds);
+    const dayIndex = date.getUTCDay();
+    const weekdays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    return weekdays[dayIndex];
+};
+
 export default function ForecastDailyItem(props){
     const colorScheme = useColorScheme();
 

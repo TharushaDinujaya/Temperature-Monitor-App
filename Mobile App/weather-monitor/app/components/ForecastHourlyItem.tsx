@@ -8,6 +8,14 @@ import { DimensionsValues } from '@/constants/DimensionsValues';
 
 const { width } = Dimensions.get('window');
 
+const getTimeFromUnixTimestamp = (unixTimestamp) => {
+    const milliseconds = unixTimestamp * 1000;
+    const date = new Date(milliseconds);
+    const hours = date.getUTCHours().toString().padStart(2, '0');
+    const minutes = date.getUTCMinutes().toString().padStart(2, '0');
+    return `${hours}:${minutes}`;
+};
+
 export default function ForecastHourlyItem(props){
     const colorScheme = useColorScheme();
 
