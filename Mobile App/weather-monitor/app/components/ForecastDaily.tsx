@@ -9,37 +9,7 @@ import { DimensionsValues } from '@/constants/DimensionsValues';
 const { width } = Dimensions.get('window');
 
 export default function ForecastDaily(props) {
-  const forecastData = [{
-    day: 'Today',
-    icon: '01d',
-    max_temperature: 30,
-    min_temperature: 20,
-    },
-    {
-    day: 'Tuesday',
-    icon: '03d',
-    max_temperature: 30,
-    min_temperature: 20,
-    },
-    {
-    day: 'Wednesday',
-    icon: '09d',
-    max_temperature: 30,
-    min_temperature: 20,
-    },
-    {
-    day: 'Thursday',
-    icon: '50d',
-    max_temperature: 30,
-    min_temperature: 20,
-    },
-    {
-    day: 'Friday',
-    icon: '02d',
-    max_temperature: 30,
-    min_temperature: 20,
-    },
-    ]
+
   const colorScheme = useColorScheme();
 
 
@@ -121,7 +91,7 @@ export default function ForecastDaily(props) {
                 <Text style={styles.cell_4}>Low</Text>
               </View>
               <View style={styles.row}>
-                  {forecastData.map((data) => (
+                  {props.dailyForecastData.map((data) => (
                     <ForecastDailyItem  key={data.day} forecastData={data}/>
                   ))}
               </View>

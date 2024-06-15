@@ -8,6 +8,14 @@ import { DimensionsValues } from '@/constants/DimensionsValues';
 
 const { width } = Dimensions.get('window');
 
+const getTimeFromUnixTimestamp = (unixTimestamp) => {
+    const milliseconds = unixTimestamp * 1000;
+    const date = new Date(milliseconds);
+    const hours = date.getUTCHours().toString().padStart(2, '0');
+    const minutes = date.getUTCMinutes().toString().padStart(2, '0');
+    return `${hours}:${minutes}`;
+};
+
 export default function ForecastHourlyItem(props){
     const colorScheme = useColorScheme();
 
@@ -55,7 +63,7 @@ export default function ForecastHourlyItem(props){
                 style={styles.background}
             />
             <View style={styles.container}>
-                <Text style={styles.time}>{props.forecastData.time}</Text>
+                <Text style={styles.time}>{getTimeFromUnixTimestamp(props.forecastData.time)}</Text>
                 <View style={styles.icon}>
                     <Icon icon={props.forecastData.icon}/>
                 </View>

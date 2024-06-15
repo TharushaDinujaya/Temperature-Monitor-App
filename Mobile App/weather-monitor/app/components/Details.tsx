@@ -11,30 +11,6 @@ const { width } = Dimensions.get('window');
 export default function Details(props) {
     const colorScheme = useColorScheme();
 
-    const icon = '02d';
-    const details = [
-    {
-      title: 'Feels like',
-      value: '20°C',
-    },
-    {
-      title: 'Humidity',
-      value: '63%',
-    },
-    {
-      title: 'Visibility',
-      value: '10 mi',
-    },
-    {
-      title: 'UV Index',
-      value: 'Low 0',
-    },
-    {
-      title: 'Dew point',
-      value: '56°',
-    },
-    ]
-
     const styles = StyleSheet.create({
       container: {
         flex: 1,
@@ -135,10 +111,10 @@ export default function Details(props) {
               <View style={styles.headerLine}/>
               <View style={styles.conditions}>
                 <View style={styles.cellLeft}>
-                    <Icon icon={icon}/>
+                    <Icon icon={props.icon}/>
                 </View>
                 <View style={styles.cellRight}>
-                    {details.map((details) => (
+                    {props.details.map((details) => (
                       <Data key={details.title} detailsData={details} />
                     ))}
                 </View>
