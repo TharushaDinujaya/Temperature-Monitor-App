@@ -16,13 +16,14 @@ import SunIndicator from './WeatherComponents/SunIndicator'
 import LocationData from './WeatherComponents/LocationData'
 
 import { Colors } from '../constants/Colors';
+import { DimensionsValues } from '../constants/DimensionsValues';
 
 import tempData from './data.json';
 import tempAirData from './airData.json';
 
 export default function Weather(props) {
-  //-----------------------------------------API Call-----------------------------------
-const [statusCode, setStatusCode] = useState(null);
+  //-----------------------------------------Set data-----------------------------------
+    const [statusCode, setStatusCode] = useState(null);
     const [data, setData] = useState(tempData);
     const [airData, setAirData] = useState(tempAirData);
     const [longitude, setLongitude] = useState(0);
@@ -39,9 +40,12 @@ const [statusCode, setStatusCode] = useState(null);
     const [detailsIcon, setDetailsIcon] = useState(null);
     const [gaugeValue, setGaugeValue] = useState(null);
 
+    const colorScheme = useColorScheme();
+
     const API_KEY = '6bc3c7860e0102e662900ee0f8cbfe11';
     const BASE_URL = 'https://api.openweathermap.org/data';
 
+  //-----------------------------------------Location-----------------------------------
     useEffect(() => {
       (async () => {
         let { status } = await Location.requestForegroundPermissionsAsync();
@@ -55,35 +59,36 @@ const [statusCode, setStatusCode] = useState(null);
         let geoCode = await Location.reverseGeocodeAsync({latitude: location.coords.latitude, longitude:location.coords.longitude});
         setCity(geoCode[0].city);
         setCountry(geoCode[0].country);
-        console.log(geoCode[0].city);
       })
       ();
     }, [city, country]);
 
+  //-----------------------------------------Data Fetch-----------------------------------
   useEffect(() => {
     const fetchData = async () => {
-      try {
-        const weatherResponse = await axios.get(`${BASE_URL}/3.0/onecall?lat=${latitude}&lon=${longitude}&units=metric&exclude=minutely&appid=${API_KEY}`);
-        setData(weatherResponse.data);
-        console.log('Weather Data Fetched Successfully !');
-      } catch (error) {
-        console.error('Error in getting weather data', error);
-        setStatusCode(404); // Set error code
-      }
-      try {
-        const airQualityResponse = await axios.get(`${BASE_URL}/2.5/air_pollution?lat=${latitude}&lon=${longitude}&appid=${API_KEY}`);
-        setAirData(airQualityResponse.data);
-        console.log('Air Quality Data Fetched Successfully !');
-      } catch (error) {
-        console.error('Error in getting air quality data', error);
-        setStatusCode(404); // Set error code
-      }
-//         setData(tempData);
-//         setAirData(tempAirData);
+//       try {
+//         const weatherResponse = await axios.get(`${BASE_URL}/3.0/onecall?lat=${latitude}&lon=${longitude}&units=metric&exclude=minutely&appid=${API_KEY}`);
+//         setData(weatherResponse.data);
+//         console.log('Weather Data Fetched Successfully !');
+//       } catch (error) {
+//         console.error('Error in getting weather data', error);
+//         setStatusCode(404); // Set error code
+//       }
+//       try {
+//         const airQualityResponse = await axios.get(`${BASE_URL}/2.5/air_pollution?lat=${latitude}&lon=${longitude}&appid=${API_KEY}`);
+//         setAirData(airQualityResponse.data);
+//         console.log('Air Quality Data Fetched Successfully !');
+//       } catch (error) {
+//         console.error('Error in getting air quality data', error);
+//         setStatusCode(404); // Set error code
+//       }
+        setData(tempData);
+        setAirData(tempAirData);
     };
     fetchData();
   }, [latitude, longitude]);
 
+  //-----------------------------------------Data Processing-----------------------------------
     useEffect(() => {
       try {
         const mainData = {
@@ -199,7 +204,6 @@ const [statusCode, setStatusCode] = useState(null);
         console.log('Error in getting Air Quality Data', error);
       }
     }, [airData]);
-  const colorScheme = useColorScheme();
 
   //-----------------------------------------Styles-----------------------------------
   const styles = StyleSheet.create({
@@ -263,15 +267,21 @@ const [statusCode, setStatusCode] = useState(null);
       flex: 1,
       alignItems: 'center',
     },
+    loadingText : {
+      color: Colors[colorScheme].mainTitleTextColor,
+      fontSize: DimensionsValues.common.mainTitleTextSize,
+      textAlign: 'center',
+      paddingTop: '10%',
+    }
   });
 
   return (
           <View style={{flex: 1}}>
               <LinearGradient
-                colors={[Colors[colorScheme ?? 'light'].gradientContainerHigh, Colors[colorScheme ?? 'light'].gradientContainerLow]}
+                colors={[Colors[colorScheme].gradientContainerHigh, Colors[colorScheme].gradientContainerLow]}
                 style={styles.background}
               />
-              {mainData === null ? <Text> Loading </Text> : <ScrollView style={styles.container} >
+              {mainData === null ? <Text style={styles.loadingText}> Loading </Text> : <ScrollView style={styles.container} >
                 <View style={styles.location}>
                     <LocationData city={city} country={country}/>
                 </View>
