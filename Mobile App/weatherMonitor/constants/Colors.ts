@@ -7,9 +7,9 @@ export const Colors = {
 
     dateBackColor : '#5AB2FF',
 
-    forecastGradientHigh : '#3572EF',
+    forecastGradientHigh : '#00A9FF',
     forecastGradientMid : '#3572EF',
-    forecastGradientLow : 'A7E6FF',
+    forecastGradientLow : '#00A9FF',
 
     tabBackGradientHigh : '#3572EF',
     tabBackGradientMid : '#5AB2FF',
@@ -31,6 +31,9 @@ export const Colors = {
 
     tabBarIndicatorColor: '#CAF4FF',
     invertedTextColor : '#050C9C',
+
+    LoadingScreenGradientHigh : '#3ABEF9',
+    LoadingScreenGradientLow : '#EEF7FF',
   },
   dark: {
     gradientHeaderHigh: '#161A30',
@@ -64,5 +67,8 @@ export const Colors = {
 
     tabBarIndicatorColor: '#CDFCF6',
     invertedTextColor : '#9BA4B4',
+
+    LoadingScreenGradientHigh : '#0D1282',
+    LoadingScreenGradientLow : '#068FFF',
   },
 };

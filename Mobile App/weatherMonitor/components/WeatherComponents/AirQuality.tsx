@@ -10,6 +10,7 @@ const { width } = Dimensions.get('window');
 
 export default function AirQuality(props) {
     const colorScheme = useColorScheme();
+
     const styles = StyleSheet.create({
       container: {
         flex: 1,
@@ -26,7 +27,7 @@ export default function AirQuality(props) {
       },
       mainTitle:{
         textAlign: 'left',
-        color: Colors[colorScheme ?? 'light'].mainTitleTextColor,
+        color: Colors[colorScheme].mainTitleTextColor,
         fontSize: DimensionsValues.common.mainTitleTextSize,
         paddingTop: '2%',
         paddingBottom: '2%',
@@ -35,7 +36,7 @@ export default function AirQuality(props) {
       headerLine:{
         width: '100%',
         height: 0.5,
-        backgroundColor: Colors[colorScheme ?? 'light'].lineColor,
+        backgroundColor: Colors[colorScheme].lineColor,
       },
       conditions:{
         paddingLeft: '5%',
@@ -68,21 +69,21 @@ export default function AirQuality(props) {
         paddingTop: 5,
       },
       title: {
-        color: Colors[colorScheme ?? 'light'].normalTextColor,
+        color: Colors[colorScheme].normalTextColor,
         fontSize: DimensionsValues.common.smallTextSize,
         textAlign:'right',
         width: '60%',
         paddingRight: '10%'
         },
       value:{
-        color: Colors[colorScheme ?? 'light'].titleTextColor,
+        color: Colors[colorScheme].titleTextColor,
         fontSize: DimensionsValues.common.smallTextSize,
         fontWeight: 'bold',
         width: '40%',
         textAlign:'left'
       },
       footerText:{
-        color: Colors[colorScheme ?? 'light'].subTextColor,
+        color: Colors[colorScheme].subTextColor,
         fontSize: DimensionsValues.common.extraSmallTextSize,
         textAlign: 'center',
         paddingBottom: '5%',

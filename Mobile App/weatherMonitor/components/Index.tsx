@@ -1,7 +1,6 @@
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { View, StyleSheet, useColorScheme } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { useState } from 'react';
 
 import Weather from "./Weather";
@@ -34,7 +33,6 @@ export default function Index() {
     });
 
     return (
-      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
            <View style={styles.container}>
                  <LinearGradient
                    colors={[Colors[colorScheme ?? 'light'].gradientHeaderHigh, Colors[colorScheme ?? 'light'].gradientHeaderLow]}
@@ -71,6 +69,5 @@ export default function Index() {
                   <Tab.Screen name="Development" component={Development} style={styles.tabItem}/>
                 </Tab.Navigator>
            </ View>
-      </ThemeProvider>
     );
 }

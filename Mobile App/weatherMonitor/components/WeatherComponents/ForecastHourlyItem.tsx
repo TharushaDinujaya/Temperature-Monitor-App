@@ -47,19 +47,18 @@ export default function ForecastHourlyItem(props){
             color: Colors[colorScheme ?? 'light'].normalTextColor,
         },
         temperature:{
-            fontSize: DimensionsValues.common.titleTextSize,
+            fontSize: DimensionsValues.common.normalTextSize,
             fontWeight: 'bold',
             color: Colors[colorScheme ?? 'light'].titleTextColor,
         },
     });
-
     return(
         <View>
             <LinearGradient
                 colors={[
-                        Colors[colorScheme ?? 'light'].forecastGradientHigh,
-                        Colors[colorScheme ?? 'light'].forecastGradientMid,
-                        Colors[colorScheme ?? 'light'].forecastGradientLow]}
+                        Colors[colorScheme].forecastGradientHigh,
+                        Colors[colorScheme].forecastGradientMid,
+                        Colors[colorScheme].forecastGradientLow]}
                 style={styles.background}
             />
             <View style={styles.container}>
