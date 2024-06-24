@@ -10,8 +10,10 @@
   "license": "MIT",
   "description": "This is the backend server for onnecting mobile app with temperature and humidity database and IoT device",
   "dependencies": {
+    "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
+    "mysql2": "^3.10.1",
     "nodemon": "^3.1.4"
   }
 }
