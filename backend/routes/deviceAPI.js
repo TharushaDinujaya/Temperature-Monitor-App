@@ -7,115 +7,134 @@ const {
   updateDeviceId,
   updateSensorMode,
   getSensorMode,
-  addDeviceSensors,
   deleteSensorData,
-  addSensorData,
   getSensorReading,
+  getDeviceSensors,
 } = require("../database/databaseFunctions");
-
-const test = require("../database/databaseFunctions");
 
 //get data from websocket
 
 //get data from sensors
 device.get("/getSensorReading-:deviceId-:sensorId", (req, res) => {
-  const deviceId = req.params.deviceId;
-  const sensorId = req.params.sensorId;
-
-  //search device id and sensor id for availability
-  const deviceAvailability = true;
-  const sensorAvailability = true;
-
-  // get sensor reading from sensors if available
-  if (deviceAvailability && sensorAvailability) {
-    const reading = { reading: "test" };
-    return res.status(200).send(reading);
-  }
-  if (deviceAvailability) {
-    return res.status(400).send("invalid sensor ID !");
-  }
-  return res.status(400).send("invalid device ID !");
+  checkDeviceIdSensorId(req.params.deviceId, req.params.sensorId).then(
+    (availability) => {
+      if (availability.state) {
+        getSensorReading(req.params.deviceId, req.params.sensorId).then(
+          (response) => {
+            if (response.state) {
+              return res.status(200).json(response.reading);
+            } else {
+              return res.status(404).json({ message: response.message });
+            }
+          }
+        );
+      } else {
+        return res.status(404).json({ message: availability.message });
+      }
+    }
+  );
 });
 
 //get sensormode from the app
 device.get("/getSensorMode-:deviceId-:sensorId", (req, res) => {
-  const deviceId = req.params.deviceId;
-  const sensorId = req.params.sensorId;
-
-  //search device id and sensor id for availability
-  const deviceAvailability = true;
-  const sensorAvailability = true;
-
-  // get sensor mode if available
-  if (deviceAvailability && sensorAvailability) {
-    const mode = { mode: "normal" };
-    return res.status(200).send(mode);
-  }
-  if (deviceAvailability) {
-    return res.status(400).send("invalid sensor ID !");
-  }
-  return res.status(400).send("invalid device ID !");
+  checkDeviceIdSensorId(req.params.deviceId, req.params.sensorId).then(
+    (availability) => {
+      if (availability.state) {
+        getSensorMode(req.params.deviceId, req.params.sensorId).then(
+          (response) => {
+            if (response.state) {
+              return res.status(200).json({ mode: response.mode });
+            } else {
+              return res.status(404).json({ message: response.message });
+            }
+          }
+        );
+      } else {
+        return res.status(404).json({ message: availability.message });
+      }
+    }
+  );
 });
 
 //set sensormode form the app
 device.put("/setSensorMode-:deviceId-:sensorId", (req, res) => {
-  const deviceId = req.params.deviceId;
-  const sensorId = req.params.sensorId;
-
-  //search device id and sensor id for availability
-  const deviceAvailability = true;
-  const sensorAvailability = true;
-
-  // set sensor mode if available
-  if (deviceAvailability && sensorAvailability) {
-    //set device mode and get the response
-    return res.status(200).send("success !");
-  }
-  if (deviceAvailability) {
-    return res.status(400).send("invalid sensor ID !");
-  }
-  return res.status(400).send("invalid device ID !");
+  checkDeviceIdSensorId(req.params.deviceId, req.params.sensorId).then(
+    (availability) => {
+      if (availability.state) {
+        updateSensorMode(
+          req.params.deviceId,
+          req.params.sensorId,
+          req.body.mode
+        ).then((response) => {
+          if (response.state) {
+            return res.status(200).json({ message: response.message });
+          } else {
+            return res.status(400).json({ message: response.message });
+          }
+        });
+      } else {
+        return res.status(404).json({ message: availability.message });
+      }
+    }
+  );
 });
 
+//get registered sensors for the device in database
 device.get("/getDeviceDetails-:deviceId", (req, res) => {
-  const deviceId = req.params.deviceId;
-
-  //search device id for availability
-  const deviceAvailability = true;
-
-  // get device details if available
-  if (deviceAvailability) {
-    //set device mode and get the response
-    const details = {
-      deviceID: "d001",
-      sensorID: {
-        S_1: true,
-        S_2: true,
-        S_3: true,
-        S_4: true,
-      },
-    };
-    //update the database for device data
-    return res.status(200).send(details);
-  }
-  return res.status(400).send("invalid device ID !");
+  checkDeviceId(req.params.deviceId).then((availability) => {
+    if (availability.state) {
+      getDeviceSensors(req.params.deviceId).then((response) => {
+        if (response.state) {
+          return res.status(200).json(response.sensors);
+        } else {
+          return res.status(404).json({ message: response.message });
+        }
+      });
+    } else {
+      return res.status(404).json({ message: availability.message });
+    }
+  });
 });
 
-device.put("/setDeviceId-:device:Id", (req, res) => {
-  const deviceId = req.params.deviceId;
+//change device id
+device.put("/setDeviceId-:deviceId", (req, res) => {
+  checkDeviceId(req.params.deviceId).then((availability) => {
+    if (availability.state) {
+      updateDeviceId(req.params.deviceId, req.body.deviceId).then(
+        (response) => {
+          console.log(response);
+          if (response.state) {
+            return res.status(200).json({ message: response.message });
+          } else {
+            return res.status(400).json({ message: response.message });
+          }
+        }
+      );
+    } else {
+      return res.status(404).json({ message: availability.message });
+    }
+  });
+});
 
-  //search device id for availability
-  const deviceAvailability = true;
-
-  // set device ID if available
-  if (deviceAvailability) {
-    //set device ID and get the response
-
-    // update the database for device ID
-
-    return res.status(200).send("Device ID updated Successfully !");
-  }
-  return res.status(400).send("invalid device ID !");
+//delete sensor readings data from the database
+device.delete("/deleteSensorData-:deviceId-:sensorId", (req, res) => {
+  checkDeviceIdSensorId(req.params.deviceId, req.params.sensorId).then(
+    (availability) => {
+      if (availability.state) {
+        deleteSensorData(req.params.deviceId, req.params.sensorId).then(
+          (response) => {
+            if (response.state) {
+              return res.status(200).json({ message: response.message });
+            } else {
+              return res.status(404).json({ message: response.message });
+            }
+          }
+        );
+      } else {
+        return res.status(404).json({ message: availability.message });
+      }
+    }
+  );
 });
 
 module.exports = device;

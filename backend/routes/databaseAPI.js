@@ -1,47 +1,81 @@
 const express = require("express");
 const database = express.Router();
 
-// const { addDeviceSensors } = require("../database/databaseFunctions");
-// // addDeviceSensors(2, 3).then((data) => {
-// //   console.log(data);
-// // });
+const {
+  checkDeviceIdSensorId,
+  deleteSensorData,
+  addSensorData,
+  getSensorReading,
+} = require("../database/databaseFunctions");
 
+//get stored data for ML model by sensor id and device id
 database.get("/storedData-:deviceId-:sensorId", (req, res) => {
-  const deviceId = req.params.deviceId;
-  const sensorId = req.params.sensorId;
-
-  //search device id and sensor id for availability
-  const deviceAvailability = true;
-  const sensorAvailability = true;
-
-  // get data from the datavase if available
-  if (deviceAvailability && sensorAvailability) {
-    const data = { data: "data" };
-    return res.status(200).send(data);
-  }
-  if (deviceAvailability) {
-    return res.status(400).send("invalid sensor ID !");
-  }
-  return res.status(400).send("invalid device ID !");
+  checkDeviceIdSensorId(req.params.deviceId, req.params.sensorId).then(
+    (availability) => {
+      if (availability.state) {
+        getSensorReading(req.params.deviceId, req.params.sensorId).then(
+          (response) => {
+            if (response.state) {
+              return res.status(200).json({
+                reading: response.reading,
+                sensor: req.params.sensorId,
+                device: req.params.deviceId,
+              });
+            } else {
+              return res.status(404).json({ message: response.message });
+            }
+          }
+        );
+      } else {
+        return res.status(404).json({ message: availability.message });
+      }
+    }
+  );
 });
 
-database.delete("/storedData-:deviceId-:sensorId", (req, res) => {
-  const deviceId = req.params.deviceId;
-  const sensorId = req.params.sensorId;
+//delete sensor readings data by admin authorization
+database.delete("/deleteStoredData-:deviceId-:sensorId", (req, res) => {
+  checkDeviceIdSensorId(req.params.deviceId, req.params.sensorId).then(
+    (availability) => {
+      if (availability.state) {
+        deleteSensorData(req.params.deviceId, req.params.sensorId).then(
+          (response) => {
+            if (response.state) {
+              return res.status(200).json({ message: response.message });
+            } else {
+              return res.status(404).json({ message: response.message });
+            }
+          }
+        );
+      } else {
+        return res.status(404).json({ message: availability.message });
+      }
+    }
+  );
+});
 
-  //search device id and sensor id for availability
-  const deviceAvailability = true;
-  const sensorAvailability = true;
-
-  // delete data from the datavase if available
-  if (deviceAvailability && sensorAvailability) {
-    //delete data from the dabase
-    return res.status(200).send("deleted stored sensor data successfully !");
-  }
-  if (deviceAvailability) {
-    return res.status(400).send("invalid sensor ID !");
-  }
-  return res.status(400).send("invalid device ID !");
+//add sensor data into the database using device id and sensor id
+database.post("/addSensorData-:deviceId-:sensorId", (req, res) => {
+  checkDeviceIdSensorId(req.params.deviceId, req.params.sensorId).then(
+    (availability) => {
+      if (availability.state) {
+        addSensorData(
+          req.params.deviceId,
+          req.params.sensorId,
+          req.body.timestamp,
+          req.body.reading
+        ).then((response) => {
+          if (response.state) {
+            return res.status(200).json({ message: response.message });
+          } else {
+            return res.status(404).json({ message: response.message });
+          }
+        });
+      } else {
+        return res.status(404).json({ message: availability.message });
+      }
+    }
+  );
 });
 
 module.exports = database;
