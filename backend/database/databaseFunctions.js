@@ -480,7 +480,7 @@ async function getSensorReading(deviceId, sensorId) {
     const sql =
       "SELECT timestamp, reading FROM sensordata WHERE sensor_id = ? AND device_id = ?";
     const [response] = await connection.query(sql, [sensorId, deviceId]);
-    if (response.affectedRows != 1) {
+    if (response.length > 0) {
       return new Promise((resolve) =>
         setTimeout(() => {
           resolve(
@@ -499,7 +499,60 @@ async function getSensorReading(deviceId, sensorId) {
           resolve(
             {
               state: false,
-              message: "no sensor data received",
+              message: "no sensor data in the database",
+            },
+            1000
+          );
+        })
+      );
+    }
+  } catch (err) {
+    return new Promise((resolve) =>
+      setTimeout(() => {
+        resolve(
+          {
+            state: false,
+            message: "database connection failed",
+            code: err.code,
+          },
+          1000
+        );
+      })
+    );
+  } finally {
+    if (connection) {
+      await connection.end();
+      // console.log("Connection closed.");
+    }
+  }
+}
+
+//get sensors in device by device id - working
+async function getDeviceSensors(deviceId) {
+  connection = await connectToDatabase();
+  try {
+    const sql = "SELECT sensor_id FROM sensor WHERE device_id = ?";
+    const [response] = await connection.query(sql, [deviceId]);
+    if (response.length > 0) {
+      return new Promise((resolve) =>
+        setTimeout(() => {
+          resolve(
+            {
+              state: true,
+              message: "received sensors list successfully",
+              sensors: response,
+            },
+            1000
+          );
+        })
+      );
+    } else {
+      return new Promise((resolve) =>
+        setTimeout(() => {
+          resolve(
+            {
+              state: false,
+              message: "no sensors registered for the device in the database",
             },
             1000
           );
@@ -537,4 +590,5 @@ module.exports = {
   deleteSensorData,
   addSensorData,
   getSensorReading,
+  getDeviceSensors,
 };
