@@ -1,4 +1,4 @@
-import { Text, View, StyleSheet, useColorScheme, Dimensions, Pressable } from "react-native";
+import { Text, View, StyleSheet, useColorScheme, Dimensions, Pressable, ScrollView } from "react-native";
 import { useState, useEffect } from "react";
 import DropDownPicker from 'react-native-dropdown-picker';
 
@@ -64,6 +64,7 @@ export default function SensorData(){
                     }
                 </View> : null
             }
+
         </View>
     );
 }
@@ -98,3 +99,18 @@ const styles = StyleSheet.create({
         textDecorationLine: 'underline'
     }
 })
+//             { currentSensorId !== null ?
+//                 <View style={styles.sensorData}>
+//                     <SensorGauge/>
+//                     <SensorDataTrends/>
+//
+//                     <Pressable
+//                     onPress={handleChange}
+//                     onPressIn={handlePressIn}>
+//                     <Text style={[pressIn && styles.pressIn, styles.changeText]}>Change Device ID Sensor Mode</Text>
+//                     </Pressable>
+//                     {
+//                         isChangePressed ? <DeviceOptions /> : <Text> Hello </Text>
+//                     }
+//                 </View> : <Text> Hello </Text>
+//             }

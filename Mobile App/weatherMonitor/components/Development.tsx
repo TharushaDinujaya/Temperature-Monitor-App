@@ -53,30 +53,34 @@ export default function Development() {
     }, [currentDeviceId])
 
     return (
-        <View style={styles.container}>
-            <LinearGradient
+        <ScrollView style={styles.scrollContainer}>
+            <View style={styles.container}>
+                <LinearGradient
                 colors={[Colors[colorScheme].gradientContainerHigh, Colors[colorScheme].gradientContainerLow]}
                 style={styles.background}
-            />
-            <View style={styles.dropdownContainer}>
-                <DropDownPicker
-                    open={open}
-                    value={currentDeviceId}
-                    items={deviceIds}
-                    setOpen={setOpen}
-                    setValue={setCurrentDeviceId}
-                    max={5}
-                    style={styles.dropdown}
-                    placeholder={'Select Device ID'}
-                    labelStyle={styles.dropdownLabel}
-                    containerStyle={styles.dropdownContainer}
                 />
-            </View>
 
-            <ScrollView style={styles.scrollContainer}>
-<AddNewDevice/>
-            </ScrollView>
-        </View>
+                <View style={styles.dropdownContainer}>
+                    <DropDownPicker
+                        open={open}
+                        value={currentDeviceId}
+                        items={deviceIds}
+                        setOpen={setOpen}
+                        setValue={setCurrentDeviceId}
+                        max={5}
+                        style={styles.dropdown}
+                        placeholder={'Select Device ID'}
+                        labelStyle={styles.dropdownLabel}
+                        containerStyle={styles.dropdownContainer}
+                    />
+                </View>
+
+                <View style={styles.scrollContainer}>
+                    <SensorData/>
+                </View>
+            </View>
+        </ScrollView>
+
     );
 }
 
@@ -89,7 +93,6 @@ const styles = StyleSheet.create({
     },
     scrollContainer:{
         flex: 1,
-        margin: width * 0.05,
         width: '100%',
     },
     background: {
