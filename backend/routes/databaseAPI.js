@@ -55,13 +55,19 @@ database.delete("/deleteStoredData-:deviceId-:sensorId", (req, res) => {
 });
 
 //add sensor data into the database using device id and sensor id
-database.post("/addSensorData-:deviceId-:sensorId", (req, res) => {
-  checkDeviceIdSensorId(req.params.deviceId, req.params.sensorId).then(
+database.post("/addSensorData", (req, res) => {
+  console.log(
+    req.body.deviceId,
+    req.body.sensorId,
+    req.body.timestamp,
+    req.body.reading
+  );
+  checkDeviceIdSensorId(req.body.deviceId, req.body.sensorId).then(
     (availability) => {
       if (availability.state) {
         addSensorData(
-          req.params.deviceId,
-          req.params.sensorId,
+          req.body.deviceId,
+          req.body.sensorId,
           req.body.timestamp,
           req.body.reading
         ).then((response) => {
