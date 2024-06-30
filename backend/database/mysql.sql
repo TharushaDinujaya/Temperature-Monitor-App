@@ -6,7 +6,8 @@ USE test;
 
 -- Create the Device table
 CREATE TABLE Device (
-    device_id INT PRIMARY KEY    
+    device_id INT PRIMARY KEY,
+    url VARCHAR()    
 );
 
 -- Create the Sensors table

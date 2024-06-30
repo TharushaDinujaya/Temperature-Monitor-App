@@ -15,7 +15,7 @@ app.use("/device", deviceAPI);
 app.use("/data", databaseAPI);
 
 app.all("*", (req, res) => {
-  res.status(404).send({ message: "invalid request" });
+  res.status(404).json({ message: "invalid request" });
 });
 
 app.listen(port, () => {
