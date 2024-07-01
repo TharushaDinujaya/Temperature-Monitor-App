@@ -1,7 +1,7 @@
 #include <functions.h>
 
-const char *registerDeviceServer = "https://backend-testing-node-lbx7.vercel.app/home";
-const char *sendSensorReadingServer = "https://backend-testing-node-lbx7.vercel.app/home";
+const char *registerDeviceServer = "https://backend-testing-node-lbx7.vercel.app/registerDevice";
+const char *sendSensorReadingServer = "https://backend-testing-node-lbx7.vercel.app//senserData";
 
 void registerDevice()
 {
@@ -13,7 +13,8 @@ void registerDevice()
         http.begin(registerDeviceServer);
         http.addHeader("Content-Type", "application/json");
 
-        String jsonData = "{\"key1\":\"value1\", \"key2\":\"value2\"}";
+        String jsonData = "{\"deviceId\":\"device01\", \"SensorDetials\": {\"sensorid\" : \" sensor_01\"}}";
+
         int httpResponseCode = http.POST(jsonData);
 
         if (httpResponseCode > 0)

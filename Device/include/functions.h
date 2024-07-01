@@ -6,9 +6,10 @@
 // utils
 void setupWifi();
 
-// Serial.end();
+// send
 void registerDevice();
 
 void sendSensorReading();
 
+// receive
 void setupServer();
