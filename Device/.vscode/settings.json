@@ -38,8 +38,8 @@
   "C_Cpp_Runner.compilerArgs": [],
   "C_Cpp_Runner.linkerArgs": [],
   "C_Cpp_Runner.includePaths": [
-    "c:/Users/Tharusha/Documents/Projects/Temperature-Monitor-App/Device/Device/include",
-    "c:/Users/Tharusha/Documents/Projects/Temperature-Monitor-App/Device/Device/src",
+    "c:/Users/Tharusha/Documents/Projects/Temperature-Monitor-App/Device/device/include",
+    "c:/Users/Tharusha/Documents/Projects/Temperature-Monitor-App/Device/device/src",
     "C:/Users/Tharusha/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32/include/newlib/platform_include",
     "C:/Users/Tharusha/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32/include/freertos/include",
     "C:/Users/Tharusha/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32/include/freertos/include/esp_additions/freertos",
@@ -282,9 +282,5 @@
   "C_Cpp_Runner.useLeakSanitizer": false,
   "C_Cpp_Runner.showCompilationTime": false,
   "C_Cpp_Runner.useLinkTimeOptimization": false,
-  "C_Cpp_Runner.msvcSecureNoWarnings": false,
-  "files.associations": {
-    "*.bal": "ballerina",
-    "functional": "cpp"
-  }
+  "C_Cpp_Runner.msvcSecureNoWarnings": false
 }
