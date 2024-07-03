@@ -6,8 +6,8 @@ USE test;
 
 -- Create the Device table
 CREATE TABLE Device (
-    device_id INT PRIMARY KEY,
-    url VARCHAR()    
+    device_id INT PRIMARY KEY, 
+    device_url varchar(15) 
 );
 
 -- Create the Sensors table
@@ -23,7 +23,7 @@ CREATE TABLE Sensor (
 CREATE TABLE SensorData (
     sensor_id INT,
     device_id INT,
-    timestamp DATETIME,
+    timestamp varchar(16),
     reading FLOAT,
     PRIMARY KEY (sensor_id, device_id, timestamp),
     FOREIGN KEY (sensor_id, device_id) REFERENCES Sensor(sensor_id, device_id)

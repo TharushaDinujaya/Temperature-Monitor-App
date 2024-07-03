@@ -4,7 +4,6 @@ const device = express.Router();
 const {
   checkDeviceId,
   checkDeviceIdSensorId,
-  updateDeviceId,
   updateSensorMode,
   getSensorMode,
   deleteSensorData,
@@ -102,26 +101,6 @@ device.get("/getDeviceDetails-:deviceId", (req, res) => {
   });
 });
 
-//change device id
-// device.put("/setDeviceId-:deviceId", (req, res) => {
-//   checkDeviceId(req.params.deviceId).then((availability) => {
-//     if (availability.state) {
-//       updateDeviceId(req.params.deviceId, req.body.deviceId).then(
-//         (response) => {
-//           console.log(response);
-//           if (response.state) {
-//             return res.status(200).json({ message: response.message });
-//           } else {
-//             return res.status(400).json({ message: response.message });
-//           }
-//         }
-//       );
-//     } else {
-//       return res.status(404).json({ message: availability.message });
-//     }
-//   });
-// });
-
 //delete sensor readings data from the database
 device.delete("/deleteSensorData-:deviceId-:sensorId", (req, res) => {
   checkDeviceIdSensorId(req.params.deviceId, req.params.sensorId).then(
@@ -143,9 +122,4 @@ device.delete("/deleteSensorData-:deviceId-:sensorId", (req, res) => {
   );
 });
 
-// register a new device
-device.post("/registerDevice", (req, res) => {
-  console.log("Message recieved !");
-  return res.status(200).send({ message: "Success !" });
-});
 module.exports = device;

@@ -14,6 +14,11 @@ app.use(express.json());
 app.use("/device", deviceAPI);
 app.use("/data", databaseAPI);
 
+app.get("/", (req, res) => {
+  checkDeviceId(1);
+  res.status(200).send("Success !");
+});
+
 app.all("*", (req, res) => {
   res.status(404).json({ message: "invalid request" });
 });

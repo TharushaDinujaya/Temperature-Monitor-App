@@ -67,11 +67,6 @@ message: "updated sensor mode successfully"
 
 {
 state: false
-message: "already in " + mode
-}
-
-{
-state: false
 message: "sensor mode update failed"
 }
 
