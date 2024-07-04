@@ -36,7 +36,7 @@ async function checkDeviceId(deviceId) {
   }
 }
 
-//check sensor existance by device id and sensor id - working
+//check sensor existance by device id and sensor id -
 async function checkDeviceIdSensorId(deviceId, sensorId) {
   let response;
   try {
@@ -48,7 +48,6 @@ async function checkDeviceIdSensorId(deviceId, sensorId) {
       sensorId +
       ";";
     const data = await client.query(sql); // Execute the create table query
-
     if (data.rows.length == 1) {
       const sql_get_url =
         "SELECT device_url FROM device WHERE device_id = " + deviceId + ";";
@@ -56,7 +55,7 @@ async function checkDeviceIdSensorId(deviceId, sensorId) {
       response = {
         state: true,
         message: "sensor is available",
-        url: device_data.rows[0].device_url,
+        url: device_data.rows[0],
       };
     } else {
       response = {
@@ -80,7 +79,7 @@ async function checkDeviceIdSensorId(deviceId, sensorId) {
   }
 }
 
-//change sensor modes by device is, sensor id and mode - working
+//change sensor modes by device is, sensor id and mode -
 async function updateSensorMode(deviceId, sensorId, mode) {
   let response;
   try {
@@ -244,7 +243,7 @@ async function deleteSensorData(deviceId, sensorId) {
   }
 }
 
-//add sensor reading by device id, sensor id, timestamp, reading value - working
+//add sensor reading by device id, sensor id, timestamp, reading value -
 async function addSensorData(deviceId, sensorId, timestamp, reading) {
   let response;
   try {
@@ -258,7 +257,7 @@ async function addSensorData(deviceId, sensorId, timestamp, reading) {
       timestamp +
       ", " +
       reading +
-      ")";
+      ");";
     const data = await client.query(sql);
     if (data.rowCount == 1) {
       response = {
@@ -303,7 +302,7 @@ async function getSensorReading(deviceId, sensorId) {
       response = {
         state: true,
         message: "received sensor data successfully",
-        reading: response,
+        reading: data.rows,
       };
     } else {
       response = {
@@ -363,18 +362,19 @@ async function getDeviceSensors(deviceId) {
   }
 }
 
-// add new device by device id and device url - working
+// add new device by device id and device url -
 async function addDevice(deviceId, device_url) {
   let response;
   try {
     await client.connect();
     const sql =
-      "INSERT INTO device (device_id, device_url) VAUES (" +
+      "INSERT INTO device (device_id, device_url) VALUES (" +
       deviceId +
       "," +
       device_url +
       ");";
     const data = await client.query(sql);
+    console.log(data);
     if (data.rows.length == 1) {
       response = {
         state: true,
@@ -402,7 +402,7 @@ async function addDevice(deviceId, device_url) {
   }
 }
 
-// update device url by device id and device url - working
+// update device url by device id and device url -
 async function updateDeviceURL(deviceId, device_url) {
   let response;
   try {
