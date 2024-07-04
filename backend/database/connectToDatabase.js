@@ -1,11 +1,20 @@
-const { Client } = require("pg");
-const client = new Client({
-  host: "",
-  user: "",
-  port: 10077,
-  password: "",
-  database: "",
-  ssl: { rejectUnauthorized: false },
-});
+const mysql = require("mysql2/promise");
 
-module.exports = { client };
+async function connectToDatabase() {
+  try {
+    const connection = await mysql.createConnection({
+      host: process.env.HOST,
+      user: process.env.USER,
+      password: process.env.PASSWORD,
+      database: process.env.DATABASE,
+      port: process.env.DATABASE_PORT,
+    });
+    console.log("Connected to MySQL database");
+    return connection;
+  } catch (error) {
+    console.log("Error connecting to database");
+    throw error;
+  }
+}
+
+module.exports = { connectToDatabase };
