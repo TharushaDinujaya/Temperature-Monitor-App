@@ -1,5 +1,6 @@
 const { connectToDatabase } = require("./connectToDatabase");
 
+let connection = false;
 //check device's existance by device id - working
 async function checkDeviceId(deviceId) {
   try {
@@ -580,6 +581,60 @@ async function getDeviceSensors(deviceId) {
   }
 }
 
+//get sensors in device by device id - working
+async function addNewDevice(deviceId, device_url) {
+  connection = await connectToDatabase();
+  try {
+    const sql = "SELECT sensor_id FROM sensor WHERE device_id = ?";
+    const [response] = await connection.query(sql, [deviceId]);
+    if (response.length > 0) {
+    } else {
+    }
+  } catch (err) {
+  } finally {
+    if (connection) {
+      await connection.end();
+      // console.log("Connection closed.");
+    }
+  }
+}
+
+//get sensors in device by device id - working
+async function updateDeviceURL(deviceId, device_url) {
+  connection = await connectToDatabase();
+  try {
+    const sql = "SELECT sensor_id FROM sensor WHERE device_id = ?";
+    const [response] = await connection.query(sql, [deviceId]);
+    if (response.length > 0) {
+    } else {
+    }
+  } catch (err) {
+  } finally {
+    if (connection) {
+      await connection.end();
+      // console.log("Connection closed.");
+    }
+  }
+}
+
+//get sensors in device by device id - working
+async function getDeviceURL(deviceId) {
+  connection = await connectToDatabase();
+  try {
+    const sql = "SELECT sensor_id FROM sensor WHERE device_id = ?";
+    const [response] = await connection.query(sql, [deviceId]);
+    if (response.length > 0) {
+    } else {
+    }
+  } catch (err) {
+  } finally {
+    if (connection) {
+      await connection.end();
+      // console.log("Connection closed.");
+    }
+  }
+}
+
 module.exports = {
   checkDeviceId,
   checkDeviceIdSensorId,
@@ -591,4 +646,7 @@ module.exports = {
   addSensorData,
   getSensorReading,
   getDeviceSensors,
+  addNewDevice,
+  updateDeviceURL,
+  getDeviceURL,
 };
