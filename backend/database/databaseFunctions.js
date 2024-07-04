@@ -1,114 +1,81 @@
 const { connectToDatabase } = require("./connectToDatabase");
 
 let connection = false;
+
 //check device's existance by device id - working
 async function checkDeviceId(deviceId) {
+  let outResponse;
   try {
     connection = await connectToDatabase();
     const sql = "SELECT * FROM Device WHERE device_id = ?";
     const [response] = await connection.execute(sql, [deviceId]);
     if (response.length == 1) {
-      return new Promise((resolve) =>
-        setTimeout(() => {
-          resolve(
-            {
-              state: true,
-              message: "device is available",
-            },
-            1000
-          );
-        })
-      );
+      outResponse = {
+        state: true,
+        message: "device is available",
+        url: response[0].device_url,
+        error: null,
+      };
     } else {
-      return new Promise((resolve) =>
-        setTimeout(() => {
-          resolve(
-            {
-              state: false,
-              message: "device is unavailable",
-            },
-            1000
-          );
-        })
-      );
+      outResponse = {
+        state: false,
+        message: "device is unavailable",
+        error: null,
+      };
     }
   } catch (err) {
-    return new Promise((resolve) =>
-      setTimeout(() => {
-        resolve(
-          {
-            state: false,
-            message: "database connection failed",
-            code: err.code,
-          },
-          1000
-        );
-      })
-    );
+    outResponse = {
+      state: false,
+      message: "database connection failed",
+      error: err,
+    };
   } finally {
     if (connection) {
       await connection.end();
-      // console.log("Connection closed.");
     }
+    return outResponse;
   }
 }
 
 //check sensor existance by device id and sensor id - working
 async function checkDeviceIdSensorId(deviceId, sensorId) {
+  let outResponse;
   try {
     connection = await connectToDatabase();
-    const sql = "SELECT * FROM sensor WHERE device_id = ? AND sensor_id = ?";
+    const sql = "SELECT * FROM Sensor WHERE device_id = ? AND sensor_id = ?";
     const [response] = await connection.execute(sql, [deviceId, sensorId]);
     if (response.length == 1) {
-      return new Promise((resolve) =>
-        setTimeout(() => {
-          resolve(
-            {
-              state: true,
-              message: "sensor is available",
-            },
-            1000
-          );
-        })
-      );
+      outResponse = {
+        state: true,
+        message: "sensor is available",
+        error: null,
+      };
     } else {
-      return new Promise((resolve) =>
-        setTimeout(() => {
-          resolve(
-            {
-              state: false,
-              message: "sensor is unavailable",
-            },
-            1000
-          );
-        })
-      );
+      outResponse = {
+        state: false,
+        message: "sensor is unavailable",
+        error: null,
+      };
     }
   } catch (err) {
-    return new Promise((resolve) =>
-      setTimeout(() => {
-        resolve(
-          {
-            state: false,
-            message: "database connection failed",
-            code: err.code,
-          },
-          1000
-        );
-      })
-    );
+    outResponse = {
+      state: false,
+      message: "database connection failed",
+      error: err,
+    };
   } finally {
     if (connection) {
       await connection.end();
-      // console.log("Connection closed.");
     }
+    return outResponse;
   }
 }
 
 //update device id by device id and new device id - working
 async function updateDeviceId(currentId, newId) {
-  connection = await connectToDatabase();
+  let outResponse;
   try {
+    connection = await connectToDatabase();
     const sqlRemoveFKSensor =
       "ALTER TABLE Sensor DROP FOREIGN KEY Sensor_ibfk_1;";
     const sqlRemoveFKSensorData =
@@ -127,287 +94,232 @@ async function updateDeviceId(currentId, newId) {
     await connection.execute(sqlAddFKSensor, []);
     await connection.execute(sqlAddFKSensorData, []);
 
-    return new Promise((resolve) =>
-      setTimeout(() => {
-        resolve(
-          {
-            state: true,
-            message: "updated device id successful",
-          },
-          1000
-        );
-      })
-    );
+    outResponse = {
+      state: true,
+      message: "updated device id successful",
+      error: null,
+    };
   } catch (err) {
-    return new Promise((resolve) =>
-      setTimeout(() => {
-        resolve(
-          {
-            state: false,
-            message: "database connection failed",
-            code: err.code,
-          },
-          1000
-        );
-      })
-    );
+    outResponse = {
+      state: false,
+      message: "database connection failed",
+      error: err,
+    };
   } finally {
     if (connection) {
       await connection.end();
-      // console.log("Connection closed.");
     }
+    return outResponse;
   }
 }
 
 //change sensor modes by device is, sensor id and mode - working
 async function updateSensorMode(deviceId, sensorId, mode) {
-  connection = await connectToDatabase();
+  let outResponse;
   try {
+    connection = await connectToDatabase();
     const sql =
-      "UPDATE sensor SET sensor_mode = ? WHERE sensor_id = ? AND device_id = ?;";
+      "UPDATE Sensor SET sensor_mode = ? WHERE sensor_id = ? AND device_id = ?;";
     const [response] = await connection.query(sql, [mode, sensorId, deviceId]);
     if (response.affectedRows == 1 && response.changedRows == 1) {
-      return new Promise((resolve) =>
-        setTimeout(() => {
-          resolve(
-            {
-              state: true,
-              message: "updated sensor mode successfully",
-            },
-            1000
-          );
-        })
-      );
+      outResponse = {
+        state: true,
+        message: "updated sensor mode successfully",
+        error: null,
+      };
     } else if (response.affectedRows == 1 && response.changedRows == 0) {
-      return new Promise((resolve) =>
-        setTimeout(() => {
-          resolve(
-            {
-              state: false,
-              message: "already in " + mode,
-            },
-            1000
-          );
-        })
-      );
+      outResponse = {
+        state: false,
+        message: "already in " + mode,
+        error: null,
+      };
     } else {
-      return new Promise((resolve) =>
-        setTimeout(() => {
-          resolve(
-            {
-              state: false,
-              message: "sensor mode update failed",
-            },
-            1000
-          );
-        })
-      );
+      outResponse = {
+        state: false,
+        message: "sensor mode update failed",
+        error: null,
+      };
     }
   } catch (err) {
-    return new Promise((resolve) =>
-      setTimeout(() => {
-        resolve(
-          {
-            state: false,
-            message: "database connection failed",
-            code: err.code,
-          },
-          1000
-        );
-      })
-    );
+    outResponse = {
+      state: false,
+      message: "database connection failed",
+      error: err,
+    };
   } finally {
     if (connection) {
       await connection.end();
-      // console.log("Connection closed.");
     }
+    return outResponse;
+  }
+}
+
+//change all sensor modes by device id and sensor list - working
+async function updateAllSensorMode(deviceId, sensors) {
+  let outResponse;
+  try {
+    connection = await connectToDatabase();
+
+    const update_sql =
+      "UPDATE Sensor SET sensor_mode = ? WHERE sensor_id = ? AND device_id = ?;";
+    const add_sql =
+      "INSERT INTO Sensor (sensor_id, device_id, sensor_mode) VALUES (?, ?, ?)";
+    let responseArray = [];
+
+    for (let i = 0; i < sensors.length; i++) {
+      const [response] = await connection.query(update_sql, [
+        sensors[i].sensor_mode,
+        sensors[i].sensor_id,
+        deviceId,
+      ]);
+      if (response.affectedRows == 1) {
+        responseArray.push({ sensor_id: sensors[i].sensor_id, state: true });
+      } else {
+        const addResponse = await connection.query(add_sql, [
+          sensors[i].sensor_id,
+          deviceId,
+          sensors[i].sensor_mode,
+        ]);
+        if (addResponse.affectedRows == 1) {
+          responseArray.push({ sensor_id: sensors[i].sensor_id, state: true });
+        } else {
+          responseArray.push({ sensor_id: sensors[i].sensor_id, state: false });
+        }
+      }
+    }
+    outResponse = {
+      state: true,
+      message: "updated sensor mode successfully",
+      result: responseArray,
+      error: null,
+    };
+  } catch (err) {
+    outResponse = {
+      state: false,
+      message: "database connection failed",
+      error: err,
+    };
+  } finally {
+    if (connection) {
+      await connection.end();
+    }
+    return outResponse;
   }
 }
 
 //get current sensor mode by device id and sensor id - working
 async function getSensorMode(deviceId, sensorId) {
-  connection = await connectToDatabase(deviceId, sensorId);
+  let outResponse;
   try {
+    connection = await connectToDatabase();
     const sql =
-      "SELECT sensor_mode FROM sensor WHERE sensor_id = ? AND device_id = ?";
+      "SELECT sensor_mode FROM Sensor WHERE sensor_id = ? AND device_id = ?";
     const [response] = await connection.query(sql, [sensorId, deviceId]);
     if (response.length == 1) {
-      return new Promise((resolve) =>
-        setTimeout(() => {
-          resolve(
-            {
-              state: true,
-              message: "sensor is available",
-              mode: response[0].sensor_mode,
-            },
-            1000
-          );
-        })
-      );
+      outResponse = {
+        state: true,
+        message: "sensor is available",
+        mode: response[0].sensor_mode,
+        error: null,
+      };
     } else {
-      return new Promise((resolve) =>
-        setTimeout(() => {
-          resolve(
-            {
-              state: false,
-              message: "sensor is unavailable",
-              mode: "unable find the mode",
-            },
-            1000
-          );
-        })
-      );
+      outResponse = {
+        state: false,
+        message: "sensor is unavailable",
+        mode: "unable find the mode",
+        error: null,
+      };
     }
   } catch (err) {
-    return new Promise((resolve) =>
-      setTimeout(() => {
-        resolve(
-          {
-            state: false,
-            message: "database connection failed",
-            code: err.code,
-          },
-          1000
-        );
-      })
-    );
+    outResponse = {
+      state: false,
+      message: "database connection failed",
+      error: err,
+    };
   } finally {
     if (connection) {
       await connection.end();
-      // console.log("Connection closed.");
     }
+    return outResponse;
   }
 }
 
 //add a sensor to the device by device id and sensor id - working
-async function addDeviceSensors(deviceId, sensorId) {
-  connection = await connectToDatabase();
+async function addDeviceSensors(deviceId, sensorId, mode) {
+  let outResponse;
   try {
+    connection = await connectToDatabase();
     const sql =
       "INSERT INTO Sensor (sensor_id, device_id, sensor_mode) VALUES (?, ?, ?)";
-    const [response] = await connection.query(sql, [
-      sensorId,
-      deviceId,
-      "normal",
-    ]);
+    const [response] = await connection.query(sql, [sensorId, deviceId, mode]);
     if (response.affectedRows == 1) {
-      return new Promise((resolve) =>
-        setTimeout(() => {
-          resolve(
-            {
-              state: true,
-              message: "added sensor successfully",
-            },
-            1000
-          );
-        })
-      );
+      outResponse = {
+        state: true,
+        message: "added sensor successfully",
+        error: null,
+      };
     } else {
-      return new Promise((resolve) =>
-        setTimeout(() => {
-          resolve(
-            {
-              state: false,
-              message: "failed to add the sensor",
-            },
-            1000
-          );
-        })
-      );
+      outResponse = {
+        state: false,
+        message: "failed to add the sensor",
+        error: null,
+      };
     }
   } catch (err) {
-    if (err.code == "ER_DUP_ENTRY") {
-      return new Promise((resolve) =>
-        setTimeout(() => {
-          resolve(
-            {
-              state: false,
-              message: "sensor is added already",
-            },
-            1000
-          );
-        })
-      );
-    } else {
-      return new Promise((resolve) =>
-        setTimeout(() => {
-          resolve(
-            {
-              state: false,
-              message: "database connection failed",
-              code: err.code,
-            },
-            1000
-          );
-        })
-      );
-    }
+    outResponse = {
+      state: false,
+      message: "database connection failed",
+      error: err,
+    };
   } finally {
     if (connection) {
       await connection.end();
-      // console.log("Connection closed.");
     }
+    return outResponse;
   }
 }
 
 //delete sensor reading data by device id and sensor id - working
 async function deleteSensorData(deviceId, sensorId) {
-  connection = await connectToDatabase();
+  let outResponse;
   try {
-    const sql = "DELETE FROM sensordata WHERE sensor_id = ? AND device_id = ?;";
+    connection = await connectToDatabase();
+    const sql = "DELETE FROM SensorData WHERE sensor_id = ? AND device_id = ?;";
     const [response] = await connection.query(sql, [sensorId, deviceId]);
-    if (response.affectedRows == 1) {
-      return new Promise((resolve) =>
-        setTimeout(() => {
-          resolve(
-            {
-              state: true,
-              message: "deleted sensor data successfully",
-            },
-            1000
-          );
-        })
-      );
+    if (response.affectedRows >= 1) {
+      outResponse = {
+        state: true,
+        message: "deleted sensor data successfully",
+        error: null,
+      };
     } else {
-      return new Promise((resolve) =>
-        setTimeout(() => {
-          resolve(
-            {
-              state: false,
-              message: "sensor data unavailable",
-            },
-            1000
-          );
-        })
-      );
+      outResponse = {
+        state: false,
+        message: "sensor data unavailable",
+        error: null,
+      };
     }
   } catch (err) {
-    return new Promise((resolve) =>
-      setTimeout(() => {
-        resolve(
-          {
-            state: false,
-            message: "database connection failed",
-            code: err.code,
-          },
-          1000
-        );
-      })
-    );
+    outResponse = {
+      state: false,
+      message: "database connection failed",
+      error: err,
+    };
   } finally {
     if (connection) {
       await connection.end();
-      // console.log("Connection closed.");
     }
+    return outResponse;
   }
 }
 
 //add sensor reading by device id, sensor id, timestamp, reading value - working
 async function addSensorData(deviceId, sensorId, timestamp, reading) {
-  connection = await connectToDatabase();
+  let outResponse;
   try {
+    connection = await connectToDatabase();
     const sql =
-      "INSERT INTO sensordata (sensor_id, device_id, timestamp, reading) VALUES (?, ?, ?, ?)";
+      "INSERT INTO SensorData (sensor_id, device_id, timestamp, reading) VALUES (?, ?, ?, ?)";
     const [response] = await connection.query(sql, [
       sensorId,
       deviceId,
@@ -415,223 +327,204 @@ async function addSensorData(deviceId, sensorId, timestamp, reading) {
       reading,
     ]);
     if (response.affectedRows == 1) {
-      return new Promise((resolve) =>
-        setTimeout(() => {
-          resolve(
-            {
-              state: true,
-              message: "added sensor data successfully",
-            },
-            1000
-          );
-        })
-      );
+      outResponse = {
+        state: true,
+        message: "added sensor data successfully",
+        error: null,
+      };
     } else {
-      return new Promise((resolve) =>
-        setTimeout(() => {
-          resolve(
-            {
-              state: false,
-              message: "sensor data update failed",
-            },
-            1000
-          );
-        })
-      );
+      outResponse = {
+        state: false,
+        message: "sensor data update failed",
+        error: null,
+      };
     }
   } catch (err) {
-    if (err.code === "ER_DUP_ENTRY") {
-      return new Promise((resolve) =>
-        setTimeout(() => {
-          resolve(
-            {
-              state: false,
-              message: "same sensor data already in the database",
-            },
-            1000
-          );
-        })
-      );
-    } else {
-      return new Promise((resolve) =>
-        setTimeout(() => {
-          resolve(
-            {
-              state: false,
-              message: "database connection failed",
-              code: err.code,
-            },
-            1000
-          );
-        })
-      );
-    }
+    outResponse = {
+      state: false,
+      message: "database connection failed",
+      error: err,
+    };
   } finally {
     if (connection) {
       await connection.end();
-      // console.log("Connection closed.");
     }
+    return outResponse;
   }
 }
 
 //get sensor reading by device id, sensor id - working
 async function getSensorReading(deviceId, sensorId) {
-  connection = await connectToDatabase();
+  let outResponse;
   try {
+    connection = await connectToDatabase();
     const sql =
-      "SELECT timestamp, reading FROM sensordata WHERE sensor_id = ? AND device_id = ?";
+      "SELECT timestamp, reading FROM SensorData WHERE sensor_id = ? AND device_id = ?";
     const [response] = await connection.query(sql, [sensorId, deviceId]);
     if (response.length > 0) {
-      return new Promise((resolve) =>
-        setTimeout(() => {
-          resolve(
-            {
-              state: true,
-              message: "received sensor data successfully",
-              reading: response,
-            },
-            1000
-          );
-        })
-      );
+      outResponse = {
+        state: true,
+        message: "received sensor data successfully",
+        reading: response,
+        error: null,
+      };
     } else {
-      return new Promise((resolve) =>
-        setTimeout(() => {
-          resolve(
-            {
-              state: false,
-              message: "no sensor data in the database",
-            },
-            1000
-          );
-        })
-      );
+      outResponse = {
+        state: false,
+        message: "no sensor data in the database",
+        error: null,
+      };
     }
   } catch (err) {
-    return new Promise((resolve) =>
-      setTimeout(() => {
-        resolve(
-          {
-            state: false,
-            message: "database connection failed",
-            code: err.code,
-          },
-          1000
-        );
-      })
-    );
+    outResponse = {
+      state: false,
+      message: "database connection failed",
+      error: err,
+    };
   } finally {
     if (connection) {
       await connection.end();
-      // console.log("Connection closed.");
     }
+    return outResponse;
   }
 }
 
 //get sensors in device by device id - working
 async function getDeviceSensors(deviceId) {
-  connection = await connectToDatabase();
+  let outResponse;
   try {
-    const sql = "SELECT sensor_id FROM sensor WHERE device_id = ?";
+    connection = await connectToDatabase();
+    const sql = "SELECT sensor_id, sensor_mode FROM Sensor WHERE device_id = ?";
     const [response] = await connection.query(sql, [deviceId]);
     if (response.length > 0) {
-      return new Promise((resolve) =>
-        setTimeout(() => {
-          resolve(
-            {
-              state: true,
-              message: "received sensors list successfully",
-              sensors: response,
-            },
-            1000
-          );
-        })
-      );
+      outResponse = {
+        state: true,
+        message: "received sensors list successfully",
+        sensors: response,
+        error: null,
+      };
     } else {
-      return new Promise((resolve) =>
-        setTimeout(() => {
-          resolve(
-            {
-              state: false,
-              message: "no sensors registered for the device in the database",
-            },
-            1000
-          );
-        })
-      );
+      outResponse = {
+        state: false,
+        message: "no sensors registered for the device in the database",
+        error: null,
+      };
     }
   } catch (err) {
-    return new Promise((resolve) =>
-      setTimeout(() => {
-        resolve(
-          {
-            state: false,
-            message: "database connection failed",
-            code: err.code,
-          },
-          1000
-        );
-      })
-    );
+    outResponse = {
+      state: false,
+      message: "database connection failed",
+      error: err,
+    };
   } finally {
     if (connection) {
       await connection.end();
-      // console.log("Connection closed.");
     }
+    return outResponse;
   }
 }
 
 //get sensors in device by device id - working
 async function addNewDevice(deviceId, device_url) {
-  connection = await connectToDatabase();
+  let outResponse;
   try {
-    const sql = "SELECT sensor_id FROM sensor WHERE device_id = ?";
-    const [response] = await connection.query(sql, [deviceId]);
-    if (response.length > 0) {
+    connection = await connectToDatabase();
+    const sql =
+      "INSERT IGNORE INTO Device (device_id, device_url) VALUES (?, ?);";
+    const [response] = await connection.query(sql, [deviceId, device_url]);
+    if (response.affectedRows == 1) {
+      outResponse = {
+        state: true,
+        message: "added new device successfully",
+        error: null,
+      };
     } else {
+      outResponse = {
+        state: false,
+        message: "failed to add new device into the database",
+        error: null,
+      };
     }
   } catch (err) {
+    outResponse = {
+      state: false,
+      message: "database connection failed",
+      error: err,
+    };
   } finally {
     if (connection) {
       await connection.end();
-      // console.log("Connection closed.");
     }
+    return outResponse;
   }
 }
 
 //get sensors in device by device id - working
 async function updateDeviceURL(deviceId, device_url) {
-  connection = await connectToDatabase();
+  let outResponse;
   try {
-    const sql = "SELECT sensor_id FROM sensor WHERE device_id = ?";
-    const [response] = await connection.query(sql, [deviceId]);
-    if (response.length > 0) {
+    connection = await connectToDatabase();
+    const sql = "UPDATE Device SET device_url = ? WHERE device_id = ?;";
+    const [response] = await connection.query(sql, [device_url, deviceId]);
+    if (response.affectedRows == 1) {
+      outResponse = {
+        state: true,
+        message: "updated device url successfully",
+        error: null,
+      };
     } else {
+      outResponse = {
+        state: false,
+        message: "failed to update device url",
+        error: null,
+      };
     }
   } catch (err) {
+    outResponse = {
+      state: false,
+      message: "database connection failed",
+      error: err,
+    };
   } finally {
     if (connection) {
       await connection.end();
-      // console.log("Connection closed.");
     }
+    return outResponse;
   }
 }
 
 //get sensors in device by device id - working
 async function getDeviceURL(deviceId) {
+  let outResponse;
   connection = await connectToDatabase();
   try {
-    const sql = "SELECT sensor_id FROM sensor WHERE device_id = ?";
+    const sql = "SELECT device_url FROM Device WHERE device_id = ?";
     const [response] = await connection.query(sql, [deviceId]);
     if (response.length > 0) {
+      outResponse = {
+        state: true,
+        message: "got device id successfully",
+        url: response[0].device_url,
+        error: null,
+      };
     } else {
+      outResponse = {
+        state: false,
+        message: "unable to find the device url",
+        error: null,
+      };
     }
   } catch (err) {
+    outResponse = {
+      state: false,
+      message: "database connection failed",
+      error: err,
+    };
   } finally {
     if (connection) {
       await connection.end();
-      // console.log("Connection closed.");
     }
+    return outResponse;
   }
 }
 
@@ -649,4 +542,5 @@ module.exports = {
   addNewDevice,
   updateDeviceURL,
   getDeviceURL,
+  updateAllSensorMode,
 };

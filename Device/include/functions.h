@@ -2,12 +2,13 @@
 #include <WiFi.h>
 #include <AsyncTCP.h>
 #include <ESPAsyncWebServer.h>
+#include <ArduinoJson.h>
 
 // utils
 void setupWifi();
 
 // send
-void registerDevice();
+void updateDevice();
 
 void sendSensorReading();
 

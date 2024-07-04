@@ -9,10 +9,10 @@ async function connectToDatabase() {
       database: process.env.DATABASE,
       port: process.env.DATABASE_PORT,
     });
-    console.log("Connected to MySQL database");
+    // console.log("Connected to MySQL database");
     return connection;
   } catch (error) {
-    console.log("Error connecting to database");
+    // console.log("Error connecting to database");
     throw error;
   }
 }

@@ -9,11 +9,7 @@ void setup()
   setupWifi();
   setupServer();
   Serial.println("set server !");
-  registerDevice();
-  Serial.println("registered!");
   delay(500);
-  sendSensorReading();
-  Serial.println("send sensor data !");
 }
 
 void loop()

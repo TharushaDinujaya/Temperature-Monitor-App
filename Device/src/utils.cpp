@@ -1,7 +1,7 @@
 #include <functions.h>
 
 const char *SSID = "Galaxy";
-const char *PASSWORD = "123456";
+const char *PASSWORD = "HelloWorld";
 
 void setupWifi()
 {

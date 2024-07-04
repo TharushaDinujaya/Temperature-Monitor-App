@@ -13,21 +13,25 @@ String inputParam = "message";
 void setupServer()
 {
     // Route for root / web page
-    server.on("/requestDeviceDetails", HTTP_GET, [](AsyncWebServerRequest *request)
+    server.on("/requestData-:sensorId", HTTP_GET, [](AsyncWebServerRequest *request)
               {
-    Serial.println("Requesting Device details Message Received");
-    request->send_P(200, "text/plain", "Message Received"); });
+        Serial.println("Requesting Device details Message Received");
+        request->send_P(200, "text/plain", "Message Received"); });
 
     // Route to set GPIO to HIGH
-    server.on("/requestSensorMode", HTTP_GET, [](AsyncWebServerRequest *request)
-              {
-    Serial.println("Requesting Sensor mode Message Received");
-    request->send(200, "text/plain", "Message received"); });
+    server.on("/setSensorMode", HTTP_POST, [](AsyncWebServerRequest *request) { // Handle empty body
+        if (request->hasArg("plain") == false)
+        {
+            request->send(400, "text/plain", "Bad Request: Body not received");
+            return;
+        }
 
-    server.on("/setSensorMode", HTTP_PUT, [](AsyncWebServerRequest *request)
-              {
-    Serial.println("Setting Sensor mode Message Received");
-    request->send(200, "text/plain", "Message received"); });
+        // Read the request body
+        String body = request->arg("plain");
+        Serial.println("Received body: " + body);
+
+        request->send(200, "text/plain", "Message received");
+    });
 
     // Start server
     server.begin();
