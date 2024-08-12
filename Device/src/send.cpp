@@ -17,30 +17,26 @@ void updateDevice()
         const size_t capacity = JSON_OBJECT_SIZE(3) + JSON_ARRAY_SIZE(5) + 5 * JSON_OBJECT_SIZE(2) + 200;
         DynamicJsonDocument doc(capacity);
 
-        doc["deviceId"] = 10;
+        doc["deviceId"] = getDeviceId();
         doc["device_url"] = WiFi.localIP().toString();
 
         JsonArray sensors = doc.createNestedArray("sensors");
 
         JsonObject sensor1 = sensors.createNestedObject();
         sensor1["sensor_id"] = 1;
-        sensor1["sensor_mode"] = "normal";
+        sensor1["sensor_mode"] = getMode(1);
 
         JsonObject sensor2 = sensors.createNestedObject();
         sensor2["sensor_id"] = 2;
-        sensor2["sensor_mode"] = "normal";
+        sensor2["sensor_mode"] = getMode(2);
 
         JsonObject sensor3 = sensors.createNestedObject();
         sensor3["sensor_id"] = 3;
-        sensor3["sensor_mode"] = "normal";
+        sensor3["sensor_mode"] = getMode(3);
 
         JsonObject sensor4 = sensors.createNestedObject();
         sensor4["sensor_id"] = 4;
-        sensor4["sensor_mode"] = "normal";
-
-        JsonObject sensor7 = sensors.createNestedObject();
-        sensor7["sensor_id"] = 7;
-        sensor7["sensor_mode"] = "High";
+        sensor4["sensor_mode"] = getMode(4);
 
         // Convert JSON document to string
         String jsonData;
@@ -62,7 +58,7 @@ void updateDevice()
     }
 }
 
-void sendSensorReading()
+void sendSensorReading(int sensorId, String time, float reading)
 {
     // Perform POST request
     if (WiFi.status() == WL_CONNECTED)
@@ -73,10 +69,10 @@ void sendSensorReading()
 
         // Prepare JSON data
         DynamicJsonDocument doc(200);
-        doc["deviceId"] = 10;                      // Replace with your actual data
-        doc["sensorId"] = 1;                       // Replace with your actual data
-        doc["timestamp"] = "2024-07-04T12:34:56Z"; // Replace with your actual timestamp
-        doc["reading"] = 25.4;                     // Replace with your actual reading
+        doc["deviceId"] = getDeviceId(); // Replace with your actual data
+        doc["sensorId"] = sensorId;      // Replace with your actual data
+        doc["timestamp"] = time;         // Replace with your actual timestamp
+        doc["reading"] = reading;        // Replace with your actual reading
 
         // Convert JSON document to string
         String jsonData;

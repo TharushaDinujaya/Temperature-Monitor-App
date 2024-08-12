@@ -13,13 +13,8 @@ async function getSensorData(device_url, sensorId) {
 
 async function setSensorMode(device_url, sensorId, mode) {
   try {
-    const data = {
-      sensor_id: sensorId,
-      sensor_mode: mode,
-    };
     const response = await axios.post(
-      "https://" + device_url + "/setSensorMode",
-      data
+      "https://" + device_url + "/setSensorMode-" + sensorId + "-" + mode
     );
 
     if (res.json(response.data).state) {

@@ -1,4 +1,6 @@
 #include <functions.h>
+#include <ESPAsyncWebServer.h>
+#include <ArduinoJson.h>
 
 // Create AsyncWebServer object on port 80
 AsyncWebServer server(80);
@@ -16,21 +18,55 @@ void setupServer()
     server.on("/requestData-:sensorId", HTTP_GET, [](AsyncWebServerRequest *request)
               {
         Serial.println("Requesting Device details Message Received");
-        request->send_P(200, "text/plain", "Message Received"); });
+        StaticJsonDocument<200> doc;
+        // Check if the sensorId parameter is available
+        if (request->hasParam("sensorId")) {
+            String sensorId = request->getParam("sensorId")->value();
+            Serial.println("Sensor ID: " + sensorId);
+
+
+            doc["sensorId"] = sensorId;
+            // Call the appropriate function based on the sensorId
+            if (sensorId == "1") {
+                float temp = getTempReading();
+                doc["data"] = temp;
+            } else if (sensorId == "2") {
+                int humidity = gethumidityReading();
+                doc["data"] = humidity;
+            } else if (sensorId == "3"){
+                float moisture = getSoilReading();
+                doc["data"] = moisture;
+            } else if (sensorId == "4"){
+                float pressure = getPressureData();
+                doc["data"] = pressure;
+            }else {
+                doc["data"] = "empty";
+            }
+        }
+        String jsonString;
+        serializeJson(doc, jsonString);
+        request->send(200, "application/json", jsonString); });
 
     // Route to set GPIO to HIGH
-    server.on("/setSensorMode", HTTP_POST, [](AsyncWebServerRequest *request) { // Handle empty body
-        if (request->hasArg("plain") == false)
+    server.on("/setSensorMode-:sensorId-:mode", HTTP_POST, [](AsyncWebServerRequest *request) { // Handle empty body
+        bool status = false;
+        if (request->hasParam("sensorId") && request->hasParam("mode"))
         {
-            request->send(400, "text/plain", "Bad Request: Body not received");
-            return;
+            String sensorId = request->getParam("sensorId")->value();
+            String mode = request->getParam("mode")->value();
+            Serial.println("Sensor ID: " + sensorId);
+            Serial.println("Sensor mode: " + mode);
+
+            int sensor_id = sensorId.toInt();
+            int sensor_mode = mode.toInt();
+
+            status = setMode(sensor_id, sensor_mode);
         }
 
         // Read the request body
-        String body = request->arg("plain");
-        Serial.println("Received body: " + body);
+        String text = status ? "success !" : "falied !";
 
-        request->send(200, "text/plain", "Message received");
+        request->send(200, "text/plain", text);
     });
 
     // Start server

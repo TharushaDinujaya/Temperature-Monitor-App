@@ -6,7 +6,7 @@
   'list': [
     {
       'main': {
-        'aqi': 1
+        'aqi': 3
       },
       'components': {
         'co': 280.38,
