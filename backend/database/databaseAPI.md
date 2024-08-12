@@ -17,7 +17,6 @@ responses types:
     code: err.code
 }
 
----
 
 function : checkDeviceIdSensorId
 params : deviceId, sensorId
@@ -37,7 +36,6 @@ message: "database connection failed"
 code: err.code
 }
 
----
 
 function : updateDeviceId
 params : currentId, newId
@@ -54,7 +52,6 @@ message: "database connection failed"
 code: err.code
 }
 
----
 
 function : updateSensorMode
 params : deviceId, sensorId, mode
@@ -63,11 +60,6 @@ responses types:
 {
 state: true
 message: "updated sensor mode successfully"
-}
-
-{
-state: false
-message: "already in " + mode
 }
 
 {
@@ -81,7 +73,6 @@ message: "database connection failed"
 code: err.code
 }
 
----
 
 function : getSensorMode
 params : deviceId, sensorId
@@ -105,7 +96,6 @@ message: "database connection failed"
 code: err.code
 }
 
----
 
 function : addDeviceSensors
 params : deviceId, sensorId
@@ -132,7 +122,6 @@ message: "database connection failed"
 code: err.code
 }
 
----
 
 function : deleteSensorData
 params : deviceId, sensorId
@@ -154,7 +143,6 @@ message: "database connection failed"
 code: err.code
 }
 
----
 
 function : addSensorData
 params : deviceId, sensorId, timestamp, reading
@@ -181,7 +169,6 @@ message: "database connection failed"
 code: err.code
 }
 
----
 
 function : getSensorReading
 params : deviceId, sensorId
@@ -204,7 +191,6 @@ message: "database connection failed"
 code: err.code
 }
 
----
 
 function : getDeviceSensors
 params : deviceId
