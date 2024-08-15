@@ -6,46 +6,17 @@ import { Colors } from '../../constants/Colors';
 
 const { width } = Dimensions.get('window');
 
-export default function SensorDataTrends(){
-    const stackData = [
-        {
-          stacks: [
-            {value: 26, color: 'blue'},
-            {value: 31, color: 'red', marginBottom: 2},
-          ],
-          label: 'Jan',
-        },
-        {
-          stacks: [
-            {value: 27, color: 'blue'},
-            {value: 30, color: 'red', marginBottom: 2},
-          ],
-          label: 'Mar',
-        },
-        {
-          stacks: [
-            {value: 29, color: 'blue'},
-            {value: 33, color: 'red', marginBottom: 2},
-          ],
-          label: 'Feb',
-        },
-        {
-          stacks: [
-            {value: 27, color: 'blue'},
-            {value: 30, color: 'red', marginBottom: 2},
-          ],
-          label: 'Mar',
-        },
-      ];
+export default function SensorDataTrends(props){
+
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Temperature data Trends</Text>
+            <Text style={styles.title}>{props.sensor} data Trends</Text>
             <View style={styles.chartContainer}>
                 <BarChart
-                width={200}
-                noOfSections={4}
-                stackData={stackData}
-                barWidth={20}
+                width={280}
+                noOfSections={10}
+                stackData={props.stackData}
+                barWidth={10}
                 />
             </View>
         </View>

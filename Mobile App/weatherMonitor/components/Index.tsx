@@ -19,6 +19,7 @@ export default function Index() {
         flex: 1,
         backgroundColor: 'transparent',
         fontWeight: 'bold',
+        minHeight: '100%',
       },
       header: {
         flex: 0.075,

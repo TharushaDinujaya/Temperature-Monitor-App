@@ -7,14 +7,7 @@ import { DimensionsValues } from '../constants/DimensionsValues';
 
 const { width } = Dimensions.get('window');
 
-export default function SensorGauge(){
-
-    const tempData = {
-        'maxTemperature' : 31,
-        'minTemperature' : 26,
-        'currentTemperature' : 27,
-    }
-
+export default function SensorGauge(props){
     return (
         <View style={styles.container}>
             <View style={styles.row}>
@@ -23,7 +16,7 @@ export default function SensorGauge(){
                         size={180}
                         width={20}
                         color={'white'}
-                        progress={10}
+                        progress={props.data.gauge}
                         backgroundColor={'lightblue'}
                         labelStyle={styles.gaugeTitleText}
                         animateFromValue={0}
@@ -36,16 +29,16 @@ export default function SensorGauge(){
                 </View>
                 <View style={styles.rightContainer}>
                     <Text style={styles.mainText}>
-                        Temperature
+                        {props.sensor}
                     </Text>
                     <Text style={styles.mainTextValue}>
-                        {tempData.currentTemperature}°C
+                        {props.data.current}
                     </Text>
                     <Text style={styles.subText}>
-                        Max : {tempData.maxTemperature}°
+                        Max : {props.data.max}
                     </Text>
                     <Text style={styles.subText}>
-                        Min : {tempData.minTemperature}°C
+                        Min : {props.data.min}
                     </Text>
                 </View>
             </View>

@@ -1,37 +1,48 @@
-import { Text, View, StyleSheet, ScrollView, useColorScheme, Dimensions, TextInput } from "react-native";
+import { Text, View, StyleSheet, ScrollView, useColorScheme, Dimensions, TextInput, FlatList } from "react-native";
 import { useState, useEffect } from "react";
 import SpinnerButton from 'react-native-spinner-button';
-import DropDownPicker from 'react-native-dropdown-picker';
+import SwitchSelector from "react-native-switch-selector";
+import axios from 'axios';
 
 import { Colors } from '../constants/Colors';
 import { DimensionsValues } from '../constants/DimensionsValues';
 
 const { width } = Dimensions.get('window');
 
-export default function DeviceOptions(){
-    const [isLoading, setLoading] = useState(false);
-    const [isFindPressed, setFindPressed] = useState(false);
-    const [isDisabled, setDisabled] = useState(false);
-    const [deviceId, setDeviceId] = useState('');
+const BASE_URL = 'https://backend-testing-node.vercel.app/api/v1';
 
-    const handleFindPress = () => {
-        setFindPressed(true);
-        setLoading(true);
-        setTimeout(() => {
-          setLoading(false);
-        }, 3000);
+export default function DeviceOptions(props){
+    const options = [
+        { label: "Normal", value: 0, activeColor: 'black' },
+        { label: "Auto Read", value: 1, activeColor: 'black' },
+        { label: "Fast Read", value: 2, activeColor: 'black' },
+    ];
+    const [ sensorModeId, setSensorModeId ] = useState(props.mode);
+
+    const [ sensorId, setSensorId ] = useState(props.sensorId);
+    const [ deviceId, setDeviceId ] = useState(props.deviceId);
+
+    const modesDetails = [
+        {id: '0', modeNumber: 0, mode: 'Normal Mode', function:  'Read the Sensor data when it request by the device'},
+        {id: '1', modeNumber: 1, mode: 'Auto Read Mode', function:  'Read the Sensor data hourly and store it in database'},
+        {id: '2', modeNumber: 2, mode: 'Fast Read Mode', function: 'Read the Sensor data every 30 minutes and store it in database'}
+    ]
+
+    function handleChangeMode(value){
+        setSensorModeId(value)
+    }
+    // Need to call change sensor mode API setting up mode
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const weatherResponse = await axios.put(`${BASE_URL}/device/setSensorMode-${deviceId}-${sensorId}`);
+        console.log('Sensor mode updated Successfully !');
+      } catch (error) {
+        console.error('Error in Sensor mode update', error);
+      }
     };
-
-    const [ sensorModes, setSensorModes ] = useState([
-             {value: "m_01", label: "Normal"},
-             {value: "m_02", label: "Fast Measure"},
-             {value: "m_03", label: "Analytical"},
-             {value: "m_04", label: "Time Period"},
-             {value: "m_05", label: "Hour by Hour"},
-             {value: "m_06", label: "Random"},
-         ]);
-    const [ open, setOpen ] = useState(false);
-    const [ currentSensorMode, setCurrentSensorMode ] = useState('a');
+    fetchData();
+  }, [sensorModeId]);
 
     const styles = StyleSheet.create({
         container : {
@@ -50,16 +61,6 @@ export default function DeviceOptions(){
             color: 'white',
             marginBottom: '5%',
             paddingLeft: '10%'
-        },
-        findButton: {
-            width: 100,
-            height: 30,
-            borderColor: '#999',
-            borderRadius: 10,
-            backgroundColor: isDisabled ? 'gray' : 'white',
-            alignSelf: 'flex-end',
-            alignItems: 'center',
-            justifyContent: 'center',
         },
         column: {
             flexDirection: 'row',
@@ -93,71 +94,48 @@ export default function DeviceOptions(){
         },
         dropdown: {
             alignItems: 'center',
+        },
+        picker: {
+            paddingTop: '5%',
+            paddingBottom:'5%'
         }
     })
 
     return (
         <View style={styles.container}>
             <Text style={styles.detailsTitleText}>Device Details</Text>
-            <Text style={styles.detailsText}>Device Name, Device sensors and other data</Text>
+            <Text style={styles.detailsText}>
+                Device Id : {props.deviceId}
+            </Text>
             <Text style={styles.detailsTitleText}>Sensor Details</Text>
-            <Text style={styles.detailsText}>Sensor Name, Sensor details, Sensor Accuracy</Text>
-            <View style={styles.column}>
-                <View style={styles.leftContainer}>
-                    <Text style={styles.detailsTitleText}>Sensor Mode</Text>
-                        <DropDownPicker
-                            open={open}
-                            value={currentSensorMode}
-                            items={sensorModes}
-                            setOpen={setOpen}
-                            setValue={setCurrentSensorMode}
-                            max={2}
-                            style={styles.dropdown}
-                            placeholder={'Select Sensor mode'}
-                            containerStyle={styles.dropdownContainer}
-                        />
-                </View>
-                <View style={styles.rightContainer}>
-                    <SpinnerButton
-                        buttonStyle={styles.findButton}
-                        isLoading={isLoading}
-                        onPress={handleFindPress}
-                        spinnerColor="black"
-                        spinnerType="WaveIndicator"
-                        disabled={isDisabled}
-                    >
-                        <Text style={styles.buttonText}>change</Text>
-                    </SpinnerButton>
-                </View>
+            <Text style={styles.detailsText}>
+                Sensor : {options[sensorModeId].label}
+            </Text>
+            <View>
+                <Text style={styles.detailsTitleText}>Sensor Mode</Text>
+                <SwitchSelector
+                  options={options}
+                  initial={0}
+                  style={styles.picker}
+                  onPress={ (value) => {
+                    handleChangeMode(value)
+                  }}
+                />
             </View>
-            <View style={styles.column}>
-                <View style={styles.leftContainer}>
-                    <Text style={styles.detailsTitleText}>Device ID</Text>
-                    <TextInput
-                        style={styles.input}
-                        value={deviceId}
-                        onChangeText={setDeviceId}
-                        placeholder="Enter new device ID"
-                        placeholderTextColor="#999"
-                    />
-                </View>
-                <View style={styles.rightContainer}>
-                    <SpinnerButton
-                        buttonStyle={styles.findButton}
-                        isLoading={isLoading}
-                        onPress={handleFindPress}
-                        spinnerColor="black"
-                        spinnerType="WaveIndicator"
-                        disabled={isDisabled}
-                    >
-                        <Text style={styles.buttonText}>change</Text>
-                    </SpinnerButton>
-                </View>
-            </View>
-            <Text style={styles.detailsTitleText}>Sensor Mode Details</Text>
-            <Text style={styles.detailsText}>Modes and Benefits</Text>
 
+            <Text style={styles.detailsTitleText}>Sensor Mode Details</Text>
+            <View style={{paddingBottom: 12}}>
+                <Text style={{color: 'white', textAlign: 'left', fontSize: 16}}> {modesDetails[0].modeNumber} - {modesDetails[0].mode} </Text>
+                <Text style={{color: 'white', textAlign: 'justify', fontSize: 12}}> {modesDetails[0].function} </Text>
+            </View>
+            <View style={{paddingBottom: 12}}>
+                <Text style={{color: 'white', textAlign: 'left', fontSize: 16}}> {modesDetails[1].modeNumber} - {modesDetails[1].mode} </Text>
+                <Text style={{color: 'white', textAlign: 'justify', fontSize: 12}}> {modesDetails[1].function} </Text>
+            </View>
+            <View style={{paddingBottom: 12}}>
+                <Text style={{color: 'white', textAlign: 'left', fontSize: 16}}> {modesDetails[2].modeNumber} - {modesDetails[2].mode} </Text>
+                <Text style={{color: 'white', textAlign: 'justify', fontSize: 12}}> {modesDetails[2].function} </Text>
+            </View>
         </View>
     );
 }
-

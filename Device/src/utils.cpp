@@ -60,26 +60,26 @@ int getDeviceId()
     return deviceId;
 }
 
-float getSensorReading(int sensorId)
+String getSensorReading(int sensorId)
 {
     if (sensorId == 1)
     {
-        return getTempReading();
+        return String(getTempReading());
     }
     else if (sensorId == 2)
     {
-        return gethumidityReading();
+        return String(gethumidityReading());
     }
     else if (sensorId == 3)
     {
-        return getPressureData();
+        return String(getPressureData());
     }
     else if (sensorId == 4)
     {
-        return getSoilReading();
+        return String(getSoilReading());
     }
     else
     {
-        return -1;
+        return String(-1);
     }
 }

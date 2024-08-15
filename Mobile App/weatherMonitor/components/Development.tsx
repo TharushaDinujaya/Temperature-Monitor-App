@@ -1,7 +1,6 @@
 import { Text, View, StyleSheet, ScrollView, useColorScheme, Dimensions } from "react-native";
 import { useState, useEffect } from "react";
 import { LinearGradient } from 'expo-linear-gradient';
-import DropDownPicker from 'react-native-dropdown-picker';
 
 import { Colors } from '../constants/Colors';
 import { DimensionsValues } from '../constants/DimensionsValues';
@@ -13,44 +12,7 @@ const { width } = Dimensions.get('window');
 
 export default function Development() {
     const colorScheme = useColorScheme();
-
-    const [ deviceIds, setDeviceIds ] = useState([
-            {label: 'Device 01', value: 'd_01'},
-            {label: 'Device 02', value: 'd_02'},
-            {label: 'Device 03', value: 'd_03'},
-            {label: 'Device 04', value: 'd_04'},
-            {label: 'Device 05', value: 'd_05'},
-            {label: 'Device 06', value: 'd_06'},
-            {label: 'Add new Device ...', value: 'add'},
-    ]);
-
-    const [ isDeviceIdSelected, setIsDeviceIdSelected ] = useState(false);
-    const [ currentDeviceId, setCurrentDeviceId] = useState(null);
-    const [ isDeviceAvailable, setIsDeviceAvailable ] = useState(true);
-
-
-
-    const [ newDeviceId, setNewDeviceId ] = useState(null);
-    const [ open, setOpen ] = useState(false);
-
-    useEffect(() => {
-        // check currentDeviceId is correct or not
-        console.log(currentDeviceId)
-        if(currentDeviceId === null) {
-            setIsDeviceIdSelected(false)
-            return
-        }
-        // if add new device is selected
-        if(currentDeviceId === 'add') {
-            setIsDeviceIdSelected(true)
-            setIsDeviceAvailable(false)
-            return
-        }
-        // if device is available and get data using currentDeviceId
-        setIsDeviceAvailable(true)
-        setSensorIds()
-        setIsDeviceIdSelected(true)
-    }, [currentDeviceId])
+    const [ deviceId, setDeviceId] = useState(1);
 
     return (
         <ScrollView style={styles.scrollContainer}>
@@ -59,24 +21,8 @@ export default function Development() {
                 colors={[Colors[colorScheme].gradientContainerHigh, Colors[colorScheme].gradientContainerLow]}
                 style={styles.background}
                 />
-
-                <View style={styles.dropdownContainer}>
-                    <DropDownPicker
-                        open={open}
-                        value={currentDeviceId}
-                        items={deviceIds}
-                        setOpen={setOpen}
-                        setValue={setCurrentDeviceId}
-                        max={5}
-                        style={styles.dropdown}
-                        placeholder={'Select Device ID'}
-                        labelStyle={styles.dropdownLabel}
-                        containerStyle={styles.dropdownContainer}
-                    />
-                </View>
-
                 <View style={styles.scrollContainer}>
-                    <SensorData/>
+                    <SensorData deviceId={deviceId}/>
                 </View>
             </View>
         </ScrollView>
@@ -102,18 +48,4 @@ const styles = StyleSheet.create({
         top: 0,
         height: '100%',
     },
-    dropdown: {
-        alignItems: 'center',
-    },
-    dropdownContainer: {
-        width: '80%',
-        alignItems: 'center',
-        marginTop: '5%',
-        marginBottom: '5%'
-    }
 })
-
-//                 {isDeviceIdSelected ? isDeviceAvailable ? <SensorData/> :
-//                     currentDeviceId === 'add' ? <AddNewDevice/> :
-//                     <Text>Device Unavailable</Text> : <Text> Select Device ID</Text>
-//                 }
