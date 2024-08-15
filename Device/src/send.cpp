@@ -58,7 +58,7 @@ void updateDevice()
     }
 }
 
-void sendSensorReading(int sensorId, String time, float reading)
+void sendSensorReading(int sensorId, String time, String reading)
 {
     // Perform POST request
     if (WiFi.status() == WL_CONNECTED)

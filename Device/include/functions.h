@@ -18,7 +18,7 @@ String getSensorReading(int sensorid);
 
 // send
 void updateDevice();
-void sendSensorReading(int sensorId, String time, float reading);
+void sendSensorReading(int sensorId, String time, String reading);
 
 // soil moisture sensor
 float getSoilReading();

@@ -65,14 +65,17 @@ String getSensorReading(int sensorId)
     if (sensorId == 1)
     {
         return String(getTempReading());
+        return "1";
     }
     else if (sensorId == 2)
     {
         return String(gethumidityReading());
+        return "2";
     }
     else if (sensorId == 3)
     {
         return String(getPressureData());
+        return "3";
     }
     else if (sensorId == 4)
     {
