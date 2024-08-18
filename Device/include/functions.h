@@ -2,8 +2,10 @@
 #include <WiFi.h>
 #include <AsyncTCP.h>
 #include <ArduinoJson.h>
-
+#include <DHT22.h>
 #include <ESPAsyncWebServer.h>
+#include <BMx280I2C.h>
+#include <Wire.h>
 
 #include <Arduino.h>
 #include <WiFiUdp.h>
@@ -26,7 +28,7 @@ float getSoilReading();
 // temperature sensor
 void initializeTempSensor();
 float getTempReading();
-int gethumidityReading();
+float gethumidityReading();
 
 // pressure sensor
 void InitializeBMPSensor();

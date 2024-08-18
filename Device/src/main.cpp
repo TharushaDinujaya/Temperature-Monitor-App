@@ -67,56 +67,64 @@ void setup()
   // start the Serial communication for debugging
   Serial.begin(9600);
 
-  // setup wifi
-  setupWifi();
-  delay(500);
+  // // setup wifi
+  // setupWifi();
+  // delay(500);
 
-  // Define routes and handlers
-  server.on("/api/sensorReading", HTTP_GET, handleSensorData);
-  server.on("/api/setMode", HTTP_PUT, handleSensorMode);
+  // // Define routes and handlers
+  // server.on("/api/sensorReading", HTTP_GET, handleSensorData);
+  // server.on("/api/setMode", HTTP_PUT, handleSensorMode);
 
-  // Start the server
-  server.begin();
+  // // Start the server
+  // server.begin();
 
-  Serial.println("Server is running !");
+  // Serial.println("Server is running !");
 
-  // initiallize sensors
-  initializeTempSensor();
+  // // initiallize sensors
+  // initializeTempSensor();
+  // InitializeBMPSensor();
+
+  // // Initialize NTP Client
+  // timeClient.begin();
+
+  // updateDevice();
   InitializeBMPSensor();
-
-  // Initialize NTP Client
-  timeClient.begin();
-
-  updateDevice();
-
   delay(500);
 }
 
 void loop()
 {
-  counter++;
-  unsigned long currentMillis = millis(); // Get the current time
+  //-------------------------- Test Code for Sensors -----------------------
+  // Serial.println("Temperature : " + String(getTempReading()));
+  // Serial.println("Humidity : " + String(gethumidityReading()));
+  Serial.println("Pressure : " + String(getPressureData()));
+  // Serial.println("Soil Moisture : " + String(getSoilReading()));
+  delay(1000);
 
-  // Check if 30 minutes have passed
-  if (currentMillis - previousMillis >= interval_30)
-  {
-    previousMillis = currentMillis; // Update the last time function was called
-    timeClient.update();            // Update the NTP client
-    String time = timeClient.getFormattedTime();
+  // ------------------------ Working Code --------------------------------
+  // counter++;
+  // unsigned long currentMillis = millis(); // Get the current time
 
-    for (int i = 0; i < 4; i++)
-    {
-      int mode = getMode(i);
-      if (mode == 2)
-      {
-        sendSensorReading(i, time, getSensorReading(i)); // -1 for invalid sensor id
-      }
-      else if (mode == 1 && counter == 0)
-      {
-        sendSensorReading(i, time, getSensorReading(i)); // -1 for invalid sensor id
-      }
-      counter = counter % 2;
-    }
-  }
-  delay(2000);
+  // // Check if 30 minutes have passed
+  // if (currentMillis - previousMillis >= interval_30)
+  // {
+  //   previousMillis = currentMillis; // Update the last time function was called
+  //   timeClient.update();            // Update the NTP client
+  //   String time = timeClient.getFormattedTime();
+
+  //   for (int i = 0; i < 4; i++)
+  //   {
+  //     int mode = getMode(i);
+  //     if (mode == 2)
+  //     {
+  //       sendSensorReading(i, time, getSensorReading(i)); // -1 for invalid sensor id
+  //     }
+  //     else if (mode == 1 && counter == 0)
+  //     {
+  //       sendSensorReading(i, time, getSensorReading(i)); // -1 for invalid sensor id
+  //     }
+  //     counter = counter % 2;
+  //   }
+  // }
+  // delay(2000);
 }

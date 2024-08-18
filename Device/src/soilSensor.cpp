@@ -8,8 +8,8 @@ float getSoilReading()
     float sensorValue = analogRead(SOIL_MOISTURE_SENSOR_PIN);
 
     // Print the raw sensor value for debugging
-    Serial.print("Soil Moisture Sensor Value: ");
-    Serial.println(sensorValue);
+    // Serial.print("Soil Moisture Sensor Value: ");
+    // Serial.println(sensorValue);
 
     return sensorValue;
 }
