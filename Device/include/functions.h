@@ -16,8 +16,8 @@ void setupWifi();
 bool setMode(int sensorId, int mode);
 int getMode(int sensorId);
 int getDeviceId();
-String getSensorReading(int sensorid);
-
+void UpdateSensorReading();
+String getSensorReading(int sensorId);
 // send
 void updateDevice();
 void sendSensorReading(int sensorId, String time, String reading);

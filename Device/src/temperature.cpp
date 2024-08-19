@@ -22,6 +22,7 @@ float getTempReading()
         return tempDeg;
     }
     Serial.println("Error in data reading DHT Sensor Temperature");
+    initializeTempSensor();
     return 0;
 }
 
@@ -34,5 +35,6 @@ float gethumidityReading()
         return hum;
     }
     Serial.println("Error in data reading DHT Sensor Humidity");
+    initializeTempSensor();
     return 0;
 }

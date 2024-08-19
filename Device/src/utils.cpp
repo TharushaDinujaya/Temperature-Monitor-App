@@ -18,6 +18,7 @@ Mode
 */
 
 int deviceId = 10;
+float sensorData[4] = {0, 0, 0, 0};
 
 bool setMode(int sensorId, int mode)
 {
@@ -60,29 +61,15 @@ int getDeviceId()
     return deviceId;
 }
 
+void UpdateSensorReading()
+{
+    sensorData[0] = getTempReading();
+    sensorData[1] = gethumidityReading();
+    sensorData[2] = getPressureData();
+    sensorData[3] = getSoilReading();
+}
+
 String getSensorReading(int sensorId)
 {
-    if (sensorId == 1)
-    {
-        return String(getTempReading());
-        return "1";
-    }
-    else if (sensorId == 2)
-    {
-        return String(gethumidityReading());
-        return "2";
-    }
-    else if (sensorId == 3)
-    {
-        return String(getPressureData());
-        return "3";
-    }
-    else if (sensorId == 4)
-    {
-        return String(getSoilReading());
-    }
-    else
-    {
-        return String(-1);
-    }
+    return String(sensorData[sensorId]);
 }

@@ -110,7 +110,7 @@ device.put("/setSensorMode-:deviceId-:sensorId", async (req, res) => {
 //get registered sensors for the device in database - working & responding
 device.get("/getDeviceDetails-:deviceId", async (req, res) => {
   const availability = await checkDeviceId(req.params.deviceId);
-
+  console.log(availability);
   if (availability.state) {
     // get device data from the database
     const response = await getDeviceSensors(req.params.deviceId);

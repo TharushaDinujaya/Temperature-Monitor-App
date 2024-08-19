@@ -15,15 +15,7 @@ sensor.post("/updateDeviceData", async (req, res) => {
     req.body.device_url
   );
   if (deviceResponse.state) {
-    const sensorResponse = await updateAllSensorMode(
-      req.body.deviceId,
-      req.body.sensors
-    );
-    if (sensorResponse.state) {
-      return res.status(200).json(sensorResponse);
-    } else {
-      return res.status(400).json(sensorResponse.message);
-    }
+    return res.status(200).json(deviceResponse.message);
   } else {
     return res.status(400).json(deviceResponse.message);
   }

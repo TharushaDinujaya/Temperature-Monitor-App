@@ -1,6 +1,6 @@
 #include <functions.h>
 
-#define SOIL_MOISTURE_SENSOR_PIN 23
+#define SOIL_MOISTURE_SENSOR_PIN 35
 
 float getSoilReading()
 {

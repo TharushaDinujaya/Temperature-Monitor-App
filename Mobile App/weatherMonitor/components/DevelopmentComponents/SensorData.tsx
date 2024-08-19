@@ -90,8 +90,10 @@ export default function SensorData(props){
           // get stored data from database by sensor id and device id
           try {
             const response = await axios.get(`${BASE_URL}/data/storedData-${deviceId}-${sensorId}`);
+
+            console.log(response.data.stackData);
             setStackData(response.data.stackData); // set stack data for data trends
-            console.log(stackData)
+//             console.log(stackData)
             console.log('Stored Data Fetched Successfully !');
           } catch (error) {
             console.error('Error in getting stored data', error);
