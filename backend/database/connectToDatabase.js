@@ -6,11 +6,11 @@ async function connectToDatabase() {
   try {
     const connection = mysql
       .createConnection({
-        host: "tempmon.mysql.database.azure.com",
-        port: 3306,
-        user: "tempmon",
-        password: "UoM#2024",
-        database: "tempmondb",
+        host: process.env.HOST,
+        port: process.env.DATABASE_PORT,
+        user: process.env.USER,
+        password: process.env.PASSWORD,
+        database: process.env.DATABASE,
       })
       .promise();
 

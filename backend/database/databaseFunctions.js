@@ -154,6 +154,49 @@ async function updateSensorMode(deviceId, sensorId, mode) {
   }
 }
 
+// get maximum sensor reading and minimum sensor reading by device id and sensor id - working
+async function getMaxMin(deviceId, sensorId) {
+  let outResponse;
+  try {
+    connection = await connectToDatabase();
+    const sql_max =
+      "SELECT MAX(reading) AS max FROM tempmondb.sensordata WHERE device_id = ? AND sensor_id = ?;";
+    const sql_min =
+      "SELECT MIN(reading) AS min FROM tempmondb.sensordata WHERE device_id = ? AND sensor_id = ?;";
+    const [max_data] = await connection.query(sql_max, [deviceId, sensorId]);
+    const [min_data] = await connection.query(sql_min, [deviceId, sensorId]);
+
+    if (max_data.length === 1 && min_data.length === 1) {
+      outResponse = {
+        state: true,
+        message: "got max and min data successfully",
+        max: max_data[0].max,
+        min: min_data[0].min,
+        error: null,
+      };
+    } else {
+      outResponse = {
+        state: false,
+        message: "failed to get maximum and minimum",
+        max: 0,
+        min: 0,
+        error: null,
+      };
+    }
+  } catch (err) {
+    outResponse = {
+      state: false,
+      message: "database connection failed",
+      error: err,
+    };
+  } finally {
+    if (connection) {
+      await connection.end();
+    }
+    return outResponse;
+  }
+}
+
 //change all sensor modes by device id and sensor list - working
 async function updateAllSensorMode(deviceId, sensors) {
   let outResponse;
@@ -543,4 +586,5 @@ module.exports = {
   updateDeviceURL,
   getDeviceURL,
   updateAllSensorMode,
+  getMaxMin,
 };

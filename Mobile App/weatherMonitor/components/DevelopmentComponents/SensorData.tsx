@@ -39,49 +39,82 @@ export default function SensorData(props){
 
     const handleChangeSensor = (value) => {
         setSensor(sensorIds[value-1].label); // set sensor mode text
-        setSensorId(value-1) // set sensor mode id
+        setSensorId(value) // set sensor mode id
     };
 
     const handleChangeMode = (value) => {
         setSensorMode(value); // set sensor mode code
     };
     // ------------------------------- sample data-------------
-        const [stackData, setStackData] = useState ([
-            {
-              stacks: [
-                {value: 26, color: 'blue'},
-                {value: 31, color: 'red', marginBottom: 2},
-              ],
-              label: 'Jan',
-            },
-            {
-              stacks: [
-                {value: 27, color: 'blue'},
-                {value: 30, color: 'red', marginBottom: 2},
-              ],
-              label: 'Mar',
-            },
-            {
-              stacks: [
-                {value: 29, color: 'blue'},
-                {value: 33, color: 'red', marginBottom: 2},
-              ],
-              label: 'Feb',
-            },
-            {
-              stacks: [
-                {value: 27, color: 'blue'},
-                {value: 30, color: 'red', marginBottom: 2},
-              ],
-              label: 'Mar',
-            },
-          ])
-          const [data, setData] = useState(
-            { 'max' : '31°C',
-              'min' : '26°C',
-              'current' : '27°C',
-              'gauge' : 9}
-          )
+    const [stackData, setStackData] = useState ([
+        {
+          stacks: [
+            {value: 0, color: 'blue'},
+            {value: 0, color: 'red', marginBottom: 2},
+          ],
+        },
+        {
+          stacks: [
+            {value: 0, color: 'blue'},
+            {value: 0, color: 'red', marginBottom: 2},
+          ],
+        },
+        {
+          stacks: [
+            {value: 0, color: 'blue'},
+            {value: 0, color: 'red', marginBottom: 2},
+          ],
+        },
+        {
+          stacks: [
+            {value: 0, color: 'blue'},
+            {value: 0, color: 'red', marginBottom: 2},
+          ],
+        },
+        {
+          stacks: [
+            {value: 0, color: 'blue'},
+            {value: 0, color: 'red', marginBottom: 2},
+          ],
+        },
+        {
+          stacks: [
+            {value: 0, color: 'blue'},
+            {value: 0, color: 'red', marginBottom: 2},
+          ],
+        },
+        {
+          stacks: [
+            {value: 0, color: 'blue'},
+            {value: 0, color: 'red', marginBottom: 2},
+          ],
+        },
+        {
+          stacks: [
+            {value: 0, color: 'blue'},
+            {value: 0, color: 'red', marginBottom: 2},
+          ],
+        },
+        {
+          stacks: [
+            {value: 0, color: 'blue'},
+            {value: 0, color: 'red', marginBottom: 2},
+          ],
+        },
+        {
+          stacks: [
+            {value: 0, color: 'blue'},
+            {value: 0, color: 'red', marginBottom: 2},
+          ],
+        }
+      ])
+
+      const [data, setData] = useState(
+        { 'max' : '31°C',
+          'min' : '26°C',
+          'current' : '27°C',
+          'gauge' : 9}
+      )
     // --------------------------------------------------------
 
     //-------------------------------- API calls get current data / stored data from DB --------------
@@ -89,24 +122,34 @@ export default function SensorData(props){
         const fetchData = async () => {
           // get stored data from database by sensor id and device id
           try {
+          console.log("Getting the sensor data from the database")
             const response = await axios.get(`${BASE_URL}/data/storedData-${deviceId}-${sensorId}`);
+            if (response.data.state){
+                console.log('Stored Data Fetched Successfully !');
+                const readings = response.data.reading;
+                const updatedStackData = [...stackData];
 
-            console.log(response.data.stackData);
-            setStackData(response.data.stackData); // set stack data for data trends
-//             console.log(stackData)
-            console.log('Stored Data Fetched Successfully !');
+                // Update the stackData array using a for loop
+                for (let i = 0; i < updatedStackData.length && i < readings.length && i < 10; i++) {
+                    updatedStackData[i].stacks[0].value = readings[i].reading;
+                }
+
+                setStackData(updatedStackData);
+            }
           } catch (error) {
-            console.error('Error in getting stored data', error);
+            console.log('Error in getting stored data', error);
           }
 
           // get current data by sensor id and device id
           try {
-            const sensorDataResponse = await axios.get(`${BASE_URL}/device/getSensorReading-${deviceId}-${sensorId}`);
-            setData(sensorDataResponse.data.data); // set current data for sensor gauge
-            setSensorMode(sensorDataResponse.data.mode); // set sensor mode code
-            console.log('Sensor Data Fetched Successfully !');
+            console.log("Getting the sensor data from the device")
+            const response = await axios.get(`${BASE_URL}/device/getSensorReading-${deviceId}-${sensorId}`);
+            if (response.data.state){
+                setData(response.data)
+                console.log('Sensor Data Fetched Successfully !');
+            }
           } catch (error) {
-            console.error('Error in getting sensor data', error);
+            console.log('Error in getting sensor data', error);
           }
         };
         fetchData();
@@ -127,12 +170,12 @@ export default function SensorData(props){
 
                 <View style={styles.sensorData}>
                     <SensorGauge
-                        sensor={sensors[sensorId]}
+                        sensor={sensors[sensorId-1]}
                         data={data}
                     />
 
                     <SensorDataTrends
-                        sensor={sensors[sensorId]}
+                        sensor={sensors[sensorId-1]}
                         stackData={stackData}
                     />
 

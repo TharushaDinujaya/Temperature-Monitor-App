@@ -8,6 +8,7 @@ import { DimensionsValues } from '../constants/DimensionsValues';
 const { width } = Dimensions.get('window');
 
 export default function SensorGauge(props){
+
     return (
         <View style={styles.container}>
             <View style={styles.row}>

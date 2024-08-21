@@ -10,42 +10,36 @@ const {
   getSensorReading,
   getDeviceSensors,
   getDeviceURL,
+  getMaxMin,
 } = require("../database/databaseFunctions");
 
 const { getSensorData, setSensorMode } = require("../device/deviceFunctions");
 
 //get data from sensors - working & responding
 device.get("/getSensorReading-:deviceId-:sensorId", async (req, res) => {
+  console.log("Got request");
   const availability = await checkDeviceIdSensorId(
     req.params.deviceId,
     req.params.sensorId
   );
-  if (availability.state) {
-    // get device url from database
-    const device_url = await getDeviceURL(req.params.deviceId);
+  console.log(availability);
 
-    // get sensor data from device
-    const currentSensorData = await getSensorData(
-      device_url,
-      req.params.sensorId
-    );
-
-    // if there any previous data on databse, then sends those data too
-    const response = await getSensorReading(
-      req.params.deviceId,
-      req.params.sensorId
-    );
-
-    if (response.state) {
-      return res.status(200).json({
-        current_reading: currentSensorData,
-        database: response.reading,
-      });
-    } else {
-      return res.status(404).json({ message: response.message });
-    }
+  // get device url from database
+  const max_min = await getMaxMin(req.params.deviceId, req.params.sensorId);
+  const current_reading = 10;
+  console.log(max_min);
+  if (availability.state && max_min.state) {
+    return res.status(200).json({
+      state: true,
+      max: max_min.max,
+      min: max_min.min,
+      current: current_reading,
+      gauge: (current_reading / (max_min.max * 1.1)) * 100,
+    });
   } else {
-    return res.status(404).json({ message: availability.message });
+    return res
+      .status(404)
+      .json({ message: availability.message, state: false });
   }
 });
 
@@ -81,12 +75,17 @@ device.put("/setSensorMode-:deviceId-:sensorId", async (req, res) => {
     // get device url from database
     const device_url = await getDeviceURL(req.params.deviceId);
 
-    // set sensor mode
-    const deviceResponse = await setSensorMode(
-      device_url,
-      req.params.sensorId,
-      req.body.mode
-    );
+    // // set sensor mode
+    // const deviceResponse = await setSensorMode(
+    //   device_url,
+    //   req.params.sensorId,
+    //   req.body.mode
+    // );
+
+    const deviceResponse = {
+      state: true,
+    };
+
     // if sensor mode update success, then update the database
     if (deviceResponse.state) {
       const response = await updateSensorMode(
