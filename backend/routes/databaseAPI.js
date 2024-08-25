@@ -8,6 +8,8 @@ const {
   addNewDevice,
 } = require("../database/databaseFunctions");
 
+// -------------------------------- Version 01 APIs ---------------------------------------
+
 //get stored data for ML model by sensor id and device id - working & responding
 database.get("/storedData-:deviceId-:sensorId", async (req, res) => {
   const availability = await checkDeviceIdSensorId(
@@ -21,6 +23,7 @@ database.get("/storedData-:deviceId-:sensorId", async (req, res) => {
     );
     if (response.state) {
       return res.status(200).json({
+        state: true,
         reading: response.reading,
         sensor: req.params.sensorId,
         device: req.params.deviceId,
@@ -32,6 +35,8 @@ database.get("/storedData-:deviceId-:sensorId", async (req, res) => {
     return res.status(404).json({ message: availability.message });
   }
 });
+
+// ----------------------------------- Version 02 APIs ------------------------------
 
 //delete sensor readings data by admin authorization - working & responding
 database.delete("/deleteStoredData-:deviceId-:sensorId", async (req, res) => {
