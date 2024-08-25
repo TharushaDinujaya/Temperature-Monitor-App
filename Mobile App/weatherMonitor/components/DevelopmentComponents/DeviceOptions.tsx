@@ -36,7 +36,7 @@ export default function DeviceOptions(props){
     const fetchData = async () => {
       try {
         console.log("Updating the sensor mode into", sensorModeId)
-        const response = await axios.put(`${BASE_URL}/device/setSensorMode-1-1`, {mode:sensorModeId});
+        const response = await axios.put(`${BASE_URL}/device/setSensorMode-${deviceId}-${sensorId}`,{mode:sensorModeId});
         console.log('Sensor mode updated Successfully !');
       } catch (error) {
         console.log('Error in Sensor mode update', error);

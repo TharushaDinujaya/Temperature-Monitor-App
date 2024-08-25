@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
     },
     mainTextValue: {
         color: 'white',
-        fontSize: 40,
+        fontSize: 30,
         textAlign: 'center'
     },
     subText: {

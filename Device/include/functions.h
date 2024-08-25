@@ -1,15 +1,13 @@
 #include <HTTPClient.h>
 #include <WiFi.h>
 #include <AsyncTCP.h>
-#include <ArduinoJson.h>
 #include <DHT22.h>
-#include <ESPAsyncWebServer.h>
 #include <BMx280I2C.h>
 #include <Wire.h>
+#include <time.h>
+#include <ArduinoJson.h>
 
 #include <Arduino.h>
-#include <WiFiUdp.h>
-#include <NTPClient.h>
 
 // utils
 void setupWifi();

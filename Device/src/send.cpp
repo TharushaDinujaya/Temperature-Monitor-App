@@ -1,95 +1,96 @@
 #include <functions.h>
 
-const char *updateDeviceURL = "https://backend-testing-node-lbx7.vercel.app/registerDevice";
-const char *sendSensorReadingURL = "https://backend-testing-node-lbx7.vercel.app//senserData";
+const char *updateDeviceURL = "https://backend-testing-node.vercel.app/api/v1/deviceData/updateDeviceData";
+const char *sendSensorReadingURL = "https://backend-testing-node.vercel.app/api/v1/deviceData/addSensorData";
 
 void updateDevice()
 {
-    HTTPClient http;
-    // Perform POST request
-    if (WiFi.status() == WL_CONNECTED)
+    if (WiFi.status() == WL_CONNECTED) // Check Wi-Fi connection
     {
         HTTPClient http;
-        http.begin(updateDeviceURL);
-        http.addHeader("Content-Type", "application/json");
 
-        // Create the JSON object
-        const size_t capacity = JSON_OBJECT_SIZE(3) + JSON_ARRAY_SIZE(5) + 5 * JSON_OBJECT_SIZE(2) + 200;
-        DynamicJsonDocument doc(capacity);
+        http.begin(updateDeviceURL);                        // Specify destination for HTTP request
+        http.addHeader("Content-Type", "application/json"); // Specify content-type header
 
-        doc["deviceId"] = getDeviceId();
-        doc["device_url"] = WiFi.localIP().toString();
+        // Prepare the JSON data to send
+        String deviceId = String(getDeviceId());
+        String device_url = WiFi.localIP().toString();
+        String httpRequestData = "{\"deviceId\" : " + deviceId + " , \"device_url\" : \"" + device_url + "\" }";
 
-        JsonArray sensors = doc.createNestedArray("sensors");
+        // Debug: Print the HTTP request data
+        Serial.println("HTTP Request Data: " + httpRequestData);
 
-        JsonObject sensor1 = sensors.createNestedObject();
-        sensor1["sensor_id"] = 1;
-        sensor1["sensor_mode"] = getMode(1);
+        // Send HTTP POST request
+        int httpResponseCode = http.POST(httpRequestData);
 
-        JsonObject sensor2 = sensors.createNestedObject();
-        sensor2["sensor_id"] = 2;
-        sensor2["sensor_mode"] = getMode(2);
-
-        JsonObject sensor3 = sensors.createNestedObject();
-        sensor3["sensor_id"] = 3;
-        sensor3["sensor_mode"] = getMode(3);
-
-        JsonObject sensor4 = sensors.createNestedObject();
-        sensor4["sensor_id"] = 4;
-        sensor4["sensor_mode"] = getMode(4);
-
-        // Convert JSON document to string
-        String jsonData;
-        serializeJson(doc, jsonData);
-
-        int httpResponseCode = http.POST(jsonData);
-
+        // If the response code is greater than 0, the request was successful
         if (httpResponseCode > 0)
         {
-            String response = http.getString();
-            Serial.println(httpResponseCode);
-            Serial.println(response);
+            String response = http.getString(); // Get the response payload
+            Serial.println("HTTP Response code: " + String(httpResponseCode));
+            Serial.println("Response: " + response); // Print response payload
         }
         else
         {
-            Serial.println("Error on HTTP request");
+            Serial.println("Error on sending POST: " + String(httpResponseCode));
         }
-        http.end();
+
+        http.end(); // Free resources
+    }
+    else
+    {
+        Serial.println("WiFi Disconnected");
     }
 }
 
 void sendSensorReading(int sensorId, String time, String reading)
 {
-    // Perform POST request
-    if (WiFi.status() == WL_CONNECTED)
+    if (WiFi.status() == WL_CONNECTED) // Check Wi-Fi connection
     {
         HTTPClient http;
-        http.begin(sendSensorReadingURL);
-        http.addHeader("Content-Type", "application/json");
 
-        // Prepare JSON data
-        DynamicJsonDocument doc(200);
-        doc["deviceId"] = getDeviceId(); // Replace with your actual data
-        doc["sensorId"] = sensorId;      // Replace with your actual data
-        doc["timestamp"] = time;         // Replace with your actual timestamp
-        doc["reading"] = reading;        // Replace with your actual reading
+        http.begin(sendSensorReadingURL);                   // Specify destination for HTTP request
+        http.addHeader("Content-Type", "application/json"); // Specify content-type header
 
-        // Convert JSON document to string
-        String jsonData;
-        serializeJson(doc, jsonData);
+        // Prepare the JSON data to send
+        String deviceId = String(getDeviceId());
+        String httpRequestData = "{ \"deviceId\" : " + deviceId + " , \"sensorId\" : \"" + String(sensorId) + "\" , \"timestamp\" : \"" + time + "\", \"reading\" : \"" + reading + "\"}";
 
-        int httpResponseCode = http.POST(jsonData);
+        // Debug: Print the HTTP request data
+        Serial.println("HTTP Request Data: " + httpRequestData);
 
+        // Send HTTP POST request
+        int httpResponseCode = http.POST(httpRequestData);
+
+        // If the response code is greater than 0, the request was successful
         if (httpResponseCode > 0)
         {
-            String response = http.getString();
-            Serial.println(httpResponseCode);
-            Serial.println(response);
+            String response = http.getString(); // Get the response payload
+            Serial.println("HTTP Response code: " + String(httpResponseCode));
+            Serial.println("Response: " + response); // Print response payload
+
+            // Parse the JSON response
+            StaticJsonDocument<200> doc;
+            DeserializationError error = deserializeJson(doc, response);
+
+            if (!error)
+            {
+                int mode = doc["mode"]; // Extract the 'mode' value from the response
+                if (getMode(sensorId) != mode)
+                {
+                    setMode(sensorId, mode);
+                }
+            }
         }
         else
         {
-            Serial.println("Error on HTTP request");
+            Serial.println("Error on sending POST: " + String(httpResponseCode));
         }
-        http.end();
+
+        http.end(); // Free resources
+    }
+    else
+    {
+        Serial.println("WiFi Disconnected");
     }
 }

@@ -23,7 +23,7 @@ CREATE TABLE Sensor (
 CREATE TABLE SensorData (
     sensor_id INT,
     device_id INT,
-    timestamp varchar(16),
+    timestamp varchar(64),
     reading FLOAT,
     PRIMARY KEY (sensor_id, device_id, timestamp),
     FOREIGN KEY (sensor_id, device_id) REFERENCES Sensor(sensor_id, device_id)

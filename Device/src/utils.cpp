@@ -1,7 +1,7 @@
 #include <functions.h>
 
-const char *SSID = "Galaxy";
-const char *PASSWORD = "HelloWorld";
+const char *SSID = "Your SSID";
+const char *PASSWORD = "Your Password";
 
 int sensors[4] = {0, 0, 0, 0};
 /*
@@ -12,12 +12,12 @@ Sensor
  4 - Soil Moisture
 
 Mode
- 0 - Normal - on request
+ 0 - Normal - every 2 hours
  1 - auto send - every one hour
  2 - fast send - every 30 minutes
 */
 
-int deviceId = 10;
+int deviceId = 1;
 float sensorData[4] = {0, 0, 0, 0};
 
 bool setMode(int sensorId, int mode)
@@ -26,7 +26,8 @@ bool setMode(int sensorId, int mode)
     {
         return false;
     }
-    sensors[sensorId] = mode;
+    sensors[sensorId - 1] = mode;
+    Serial.println("Updated the Sensor Mode !");
     return true;
 }
 
@@ -36,7 +37,7 @@ int getMode(int sensorId)
     {
         return -1;
     }
-    return sensors[sensorId];
+    return sensors[sensorId - 1];
 }
 
 void setupWifi()
@@ -71,5 +72,9 @@ void UpdateSensorReading()
 
 String getSensorReading(int sensorId)
 {
+    // Serial.println(sensorData[0]);
+    // Serial.println(sensorData[1]);
+    // Serial.println(sensorData[2]);
+    // Serial.println(sensorData[3]);
     return String(sensorData[sensorId]);
 }

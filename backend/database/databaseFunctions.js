@@ -71,48 +71,6 @@ async function checkDeviceIdSensorId(deviceId, sensorId) {
   }
 }
 
-//update device id by device id and new device id - working
-async function updateDeviceId(currentId, newId) {
-  let outResponse;
-  try {
-    connection = await connectToDatabase();
-    const sqlRemoveFKSensor =
-      "ALTER TABLE Sensor DROP FOREIGN KEY Sensor_ibfk_1;";
-    const sqlRemoveFKSensorData =
-      "ALTER TABLE SensorData DROP FOREIGN KEY SensorData_ibfk_1;";
-
-    const sqlUpdate = "UPDATE Device SET device_id = ? WHERE device_id = ?;";
-
-    const sqlAddFKSensor =
-      "ALTER TABLE Sensor ADD CONSTRAINT Sensor_ibfk_1 FOREIGN KEY (device_id) REFERENCES Device(device_id);";
-    const sqlAddFKSensorData =
-      "ALTER TABLE SensorData ADD CONSTRAINT SensorData_ibfk_1 FOREIGN KEY (sensor_id, device_id) REFERENCES Sensor(sensor_id, device_id);";
-
-    await connection.execute(sqlRemoveFKSensor, []);
-    await connection.execute(sqlRemoveFKSensorData, []);
-    await connection.execute(sqlUpdate, [newId, currentId]);
-    await connection.execute(sqlAddFKSensor, []);
-    await connection.execute(sqlAddFKSensorData, []);
-
-    outResponse = {
-      state: true,
-      message: "updated device id successful",
-      error: null,
-    };
-  } catch (err) {
-    outResponse = {
-      state: false,
-      message: "database connection failed",
-      error: err,
-    };
-  } finally {
-    if (connection) {
-      await connection.end();
-    }
-    return outResponse;
-  }
-}
-
 //change sensor modes by device is, sensor id and mode - working
 async function updateSensorMode(deviceId, sensorId, mode) {
   let outResponse;
@@ -197,6 +155,269 @@ async function getMaxMin(deviceId, sensorId) {
   }
 }
 
+//get current sensor mode by device id and sensor id - working
+async function getSensorMode(deviceId, sensorId) {
+  let outResponse;
+  try {
+    connection = await connectToDatabase();
+    const sql =
+      "SELECT sensor_mode FROM Sensor WHERE sensor_id = ? AND device_id = ?";
+    const [response] = await connection.query(sql, [sensorId, deviceId]);
+    if (response.length == 1) {
+      outResponse = {
+        state: true,
+        message: "sensor is available",
+        mode: response[0].sensor_mode,
+        error: null,
+      };
+    } else {
+      outResponse = {
+        state: false,
+        message: "sensor is unavailable",
+        mode: "unable find the mode",
+        error: null,
+      };
+    }
+  } catch (err) {
+    outResponse = {
+      state: false,
+      message: "database connection failed",
+      error: err,
+    };
+  } finally {
+    if (connection) {
+      await connection.end();
+    }
+    return outResponse;
+  }
+}
+
+//add sensor reading by device id, sensor id, timestamp, reading value - working
+async function addSensorData(deviceId, sensorId, timestamp, reading) {
+  let outResponse;
+  try {
+    connection = await connectToDatabase();
+    const sql =
+      "INSERT INTO SensorData (sensor_id, device_id, timestamp, reading) VALUES (?, ?, ?, ?)";
+    const [response] = await connection.query(sql, [
+      sensorId,
+      deviceId,
+      timestamp,
+      reading,
+    ]);
+    if (response.affectedRows == 1) {
+      outResponse = {
+        state: true,
+        message: "added sensor data successfully",
+        error: null,
+      };
+    } else {
+      outResponse = {
+        state: false,
+        message: "sensor data update failed",
+        error: null,
+      };
+    }
+  } catch (err) {
+    outResponse = {
+      state: false,
+      message: "database connection failed",
+      error: err,
+    };
+  } finally {
+    if (connection) {
+      await connection.end();
+    }
+    return outResponse;
+  }
+}
+
+//get sensor reading by device id, sensor id - working
+async function getSensorReading(deviceId, sensorId) {
+  let outResponse;
+  try {
+    connection = await connectToDatabase();
+    const sql =
+      "SELECT reading FROM SensorData WHERE sensor_id = ? AND device_id = ? ORDER BY timestamp DESC LIMIT 10;";
+    const [response] = await connection.query(sql, [sensorId, deviceId]);
+    if (response.length > 0) {
+      outResponse = {
+        state: true,
+        message: "received sensor data successfully",
+        reading: response,
+        error: null,
+      };
+    } else {
+      outResponse = {
+        state: false,
+        message: "no sensor data in the database",
+        error: null,
+      };
+    }
+  } catch (err) {
+    outResponse = {
+      state: false,
+      message: "database connection failed",
+      error: err,
+    };
+  } finally {
+    if (connection) {
+      await connection.end();
+    }
+    return outResponse;
+  }
+}
+
+//get sensors in device by device id - working
+async function updateDeviceURL(deviceId, device_url) {
+  let outResponse;
+  try {
+    connection = await connectToDatabase();
+    const sql = "UPDATE Device SET device_url = ? WHERE device_id = ?;";
+    const [response] = await connection.query(sql, [device_url, deviceId]);
+    if (response.affectedRows == 1) {
+      outResponse = {
+        state: true,
+        message: "updated device url successfully",
+        error: null,
+      };
+    } else {
+      outResponse = {
+        state: false,
+        message: "failed to update device url",
+        error: null,
+      };
+    }
+  } catch (err) {
+    outResponse = {
+      state: false,
+      message: "database connection failed",
+      error: err,
+    };
+  } finally {
+    if (connection) {
+      await connection.end();
+    }
+    return outResponse;
+  }
+}
+
+//get sensors in device by device id - working
+async function getDeviceURL(deviceId) {
+  let outResponse;
+  connection = await connectToDatabase();
+  try {
+    const sql = "SELECT device_url FROM Device WHERE device_id = ?";
+    const [response] = await connection.query(sql, [deviceId]);
+    if (response.length > 0) {
+      outResponse = {
+        state: true,
+        message: "got device id successfully",
+        url: response[0].device_url,
+        error: null,
+      };
+    } else {
+      outResponse = {
+        state: false,
+        message: "unable to find the device url",
+        error: null,
+      };
+    }
+  } catch (err) {
+    outResponse = {
+      state: false,
+      message: "database connection failed",
+      error: err,
+    };
+  } finally {
+    if (connection) {
+      await connection.end();
+    }
+    return outResponse;
+  }
+}
+
+//get last sesor reading from the database
+async function getLastSensorReading(deviceId, sensorId) {
+  let outResponse;
+  connection = await connectToDatabase();
+  try {
+    const sql =
+      "SELECT reading FROM sensordata WHERE device_id = ? AND sensor_id = ? ORDER BY timestamp LIMIT 1;";
+    const [response] = await connection.query(sql, [deviceId, sensorId]);
+
+    if (response.length > 0) {
+      outResponse = {
+        state: true,
+        message: "got sensor reading successfully",
+        reading: response[0].reading,
+        error: null,
+      };
+    } else {
+      outResponse = {
+        state: false,
+        message: "unable to find the sensor reading",
+        error: null,
+      };
+    }
+  } catch (err) {
+    outResponse = {
+      state: false,
+      message: "database connection failed",
+      error: err,
+    };
+  } finally {
+    if (connection) {
+      await connection.end();
+    }
+    return outResponse;
+  }
+}
+
+// ----------------------------------- Version 02 APIs ----------------------------------
+
+//update device id by device id and new device id - working
+async function updateDeviceId(currentId, newId) {
+  let outResponse;
+  try {
+    connection = await connectToDatabase();
+    const sqlRemoveFKSensor =
+      "ALTER TABLE Sensor DROP FOREIGN KEY Sensor_ibfk_1;";
+    const sqlRemoveFKSensorData =
+      "ALTER TABLE SensorData DROP FOREIGN KEY SensorData_ibfk_1;";
+
+    const sqlUpdate = "UPDATE Device SET device_id = ? WHERE device_id = ?;";
+
+    const sqlAddFKSensor =
+      "ALTER TABLE Sensor ADD CONSTRAINT Sensor_ibfk_1 FOREIGN KEY (device_id) REFERENCES Device(device_id);";
+    const sqlAddFKSensorData =
+      "ALTER TABLE SensorData ADD CONSTRAINT SensorData_ibfk_1 FOREIGN KEY (sensor_id, device_id) REFERENCES Sensor(sensor_id, device_id);";
+
+    await connection.execute(sqlRemoveFKSensor, []);
+    await connection.execute(sqlRemoveFKSensorData, []);
+    await connection.execute(sqlUpdate, [newId, currentId]);
+    await connection.execute(sqlAddFKSensor, []);
+    await connection.execute(sqlAddFKSensorData, []);
+
+    outResponse = {
+      state: true,
+      message: "updated device id successful",
+      error: null,
+    };
+  } catch (err) {
+    outResponse = {
+      state: false,
+      message: "database connection failed",
+      error: err,
+    };
+  } finally {
+    if (connection) {
+      await connection.end();
+    }
+    return outResponse;
+  }
+}
+
 //change all sensor modes by device id and sensor list - working
 async function updateAllSensorMode(deviceId, sensors) {
   let outResponse;
@@ -236,43 +457,6 @@ async function updateAllSensorMode(deviceId, sensors) {
       result: responseArray,
       error: null,
     };
-  } catch (err) {
-    outResponse = {
-      state: false,
-      message: "database connection failed",
-      error: err,
-    };
-  } finally {
-    if (connection) {
-      await connection.end();
-    }
-    return outResponse;
-  }
-}
-
-//get current sensor mode by device id and sensor id - working
-async function getSensorMode(deviceId, sensorId) {
-  let outResponse;
-  try {
-    connection = await connectToDatabase();
-    const sql =
-      "SELECT sensor_mode FROM Sensor WHERE sensor_id = ? AND device_id = ?";
-    const [response] = await connection.query(sql, [sensorId, deviceId]);
-    if (response.length == 1) {
-      outResponse = {
-        state: true,
-        message: "sensor is available",
-        mode: response[0].sensor_mode,
-        error: null,
-      };
-    } else {
-      outResponse = {
-        state: false,
-        message: "sensor is unavailable",
-        mode: "unable find the mode",
-        error: null,
-      };
-    }
   } catch (err) {
     outResponse = {
       state: false,
@@ -339,82 +523,6 @@ async function deleteSensorData(deviceId, sensorId) {
       outResponse = {
         state: false,
         message: "sensor data unavailable",
-        error: null,
-      };
-    }
-  } catch (err) {
-    outResponse = {
-      state: false,
-      message: "database connection failed",
-      error: err,
-    };
-  } finally {
-    if (connection) {
-      await connection.end();
-    }
-    return outResponse;
-  }
-}
-
-//add sensor reading by device id, sensor id, timestamp, reading value - working
-async function addSensorData(deviceId, sensorId, timestamp, reading) {
-  let outResponse;
-  try {
-    connection = await connectToDatabase();
-    const sql =
-      "INSERT INTO SensorData (sensor_id, device_id, timestamp, reading) VALUES (?, ?, ?, ?)";
-    const [response] = await connection.query(sql, [
-      sensorId,
-      deviceId,
-      timestamp,
-      reading,
-    ]);
-    if (response.affectedRows == 1) {
-      outResponse = {
-        state: true,
-        message: "added sensor data successfully",
-        error: null,
-      };
-    } else {
-      outResponse = {
-        state: false,
-        message: "sensor data update failed",
-        error: null,
-      };
-    }
-  } catch (err) {
-    outResponse = {
-      state: false,
-      message: "database connection failed",
-      error: err,
-    };
-  } finally {
-    if (connection) {
-      await connection.end();
-    }
-    return outResponse;
-  }
-}
-
-//get sensor reading by device id, sensor id - working
-async function getSensorReading(deviceId, sensorId) {
-  let outResponse;
-  try {
-    connection = await connectToDatabase();
-    const sql =
-      "SELECT timestamp, reading FROM SensorData WHERE sensor_id = ? AND device_id = ?";
-    const [response] = await connection.query(sql, [sensorId, deviceId]);
-    if (response.length > 0) {
-      outResponse = {
-        state: true,
-        message: "received sensor data successfully",
-        reading: response,
-        error: null,
-      };
-    } else {
-      outResponse = {
-        state: false,
-        message: "no sensor data in the database",
         error: null,
       };
     }
@@ -502,75 +610,6 @@ async function addNewDevice(deviceId, device_url) {
   }
 }
 
-//get sensors in device by device id - working
-async function updateDeviceURL(deviceId, device_url) {
-  let outResponse;
-  try {
-    connection = await connectToDatabase();
-    const sql = "UPDATE Device SET device_url = ? WHERE device_id = ?;";
-    const [response] = await connection.query(sql, [device_url, deviceId]);
-    if (response.affectedRows == 1) {
-      outResponse = {
-        state: true,
-        message: "updated device url successfully",
-        error: null,
-      };
-    } else {
-      outResponse = {
-        state: false,
-        message: "failed to update device url",
-        error: null,
-      };
-    }
-  } catch (err) {
-    outResponse = {
-      state: false,
-      message: "database connection failed",
-      error: err,
-    };
-  } finally {
-    if (connection) {
-      await connection.end();
-    }
-    return outResponse;
-  }
-}
-
-//get sensors in device by device id - working
-async function getDeviceURL(deviceId) {
-  let outResponse;
-  connection = await connectToDatabase();
-  try {
-    const sql = "SELECT device_url FROM Device WHERE device_id = ?";
-    const [response] = await connection.query(sql, [deviceId]);
-    if (response.length > 0) {
-      outResponse = {
-        state: true,
-        message: "got device id successfully",
-        url: response[0].device_url,
-        error: null,
-      };
-    } else {
-      outResponse = {
-        state: false,
-        message: "unable to find the device url",
-        error: null,
-      };
-    }
-  } catch (err) {
-    outResponse = {
-      state: false,
-      message: "database connection failed",
-      error: err,
-    };
-  } finally {
-    if (connection) {
-      await connection.end();
-    }
-    return outResponse;
-  }
-}
-
 module.exports = {
   checkDeviceId,
   checkDeviceIdSensorId,
@@ -587,4 +626,5 @@ module.exports = {
   getDeviceURL,
   updateAllSensorMode,
   getMaxMin,
+  getLastSensorReading,
 };

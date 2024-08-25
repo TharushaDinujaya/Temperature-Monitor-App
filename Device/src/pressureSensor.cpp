@@ -43,7 +43,6 @@ void InitializeBMPSensor()
 
 float getPressureData()
 {
-
     // start a measurement
     if (!bmx280.measure())
     {
@@ -58,8 +57,6 @@ float getPressureData()
     } while (!bmx280.hasValue());
 
     float pressure = bmx280.getPressure() / 1000;
-    // Serial.print("Pressure: ");
-    // Serial.println(pressure);
 
     return pressure;
 }
