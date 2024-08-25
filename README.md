@@ -4,9 +4,10 @@
 
 A versatile app for real-time weather monitoring using OpenWeather APIs and IoT devices, featuring temperature, humidity, wind data, air quality, and configurable sensor modes with data visualization.
 
+|Dark Mode|Light Mode|
 |------------------------|------------------------|
 |![Dark](https://github.com/TharushaDinujaya/Temperature-Monitor-App/blob/main/Docs/UI/loading_dark.png)|![Light](https://github.com/TharushaDinujaya/Temperature-Monitor-App/blob/main/Docs/UI/loading_light.png)|
-|------------------------|------------------------|
+
 
 The Temperature Monitor App is a versatile weather monitoring application that offers two primary functionalities:
 
@@ -170,6 +171,7 @@ For remote monitoring, navigate to the development tab to select sensors and con
 
 ## Mobile UI
 
+|Dark Mode UI|Light Mode UI|
 |------------------------|------------------------|
 |![Dark](https://github.com/TharushaDinujaya/Temperature-Monitor-App/blob/main/Docs/UI/loading_dark.png)|![Light](https://github.com/TharushaDinujaya/Temperature-Monitor-App/blob/main/Docs/UI/loading_light.png)|
 |![Dark](https://github.com/TharushaDinujaya/Temperature-Monitor-App/blob/main/Docs/UI/main_1_dark.png)|![Light](https://github.com/TharushaDinujaya/Temperature-Monitor-App/blob/main/Docs/UI/main_1_light.png)|
