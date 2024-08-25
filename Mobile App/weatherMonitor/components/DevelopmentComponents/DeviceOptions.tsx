@@ -23,7 +23,7 @@ export default function DeviceOptions(props){
     const [ deviceId, setDeviceId ] = useState(props.deviceId);
 
     const modesDetails = [
-        {id: '0', modeNumber: 0, mode: 'Normal Mode', function:  'Read the Sensor data when it request by the device'},
+        {id: '0', modeNumber: 0, mode: 'Normal Mode', function:  'Read the Sensor data every 2 hours and store it in database'},
         {id: '1', modeNumber: 1, mode: 'Auto Read Mode', function:  'Read the Sensor data hourly and store it in database'},
         {id: '2', modeNumber: 2, mode: 'Fast Read Mode', function: 'Read the Sensor data every 30 minutes and store it in database'}
     ]
@@ -36,7 +36,9 @@ export default function DeviceOptions(props){
     const fetchData = async () => {
       try {
         console.log("Updating the sensor mode into", sensorModeId)
-        const response = await axios.put(`${BASE_URL}/device/setSensorMode-${deviceId}-${sensorId}`,{mode:sensorModeId});
+        const url = `${BASE_URL}/device/setSensorMode-`+ deviceId + "-" + sensorId;
+        console.log(url)
+        const response = await axios.put(url, {mode:sensorModeId});
         console.log('Sensor mode updated Successfully !');
       } catch (error) {
         console.log('Error in Sensor mode update', error);

@@ -66,24 +66,24 @@ export default function Weather(props) {
   //-----------------------------------------Data Fetch-----------------------------------
   useEffect(() => {
     const fetchData = async () => {
-//       try {
-//         const weatherResponse = await axios.get(`${BASE_URL}/3.0/onecall?lat=${latitude}&lon=${longitude}&units=metric&exclude=minutely&appid=${API_KEY}`);
-//         setData(weatherResponse.data);
-//         console.log('Weather Data Fetched Successfully !');
-//       } catch (error) {
-//         console.error('Error in getting weather data', error);
-//         setStatusCode(404); // Set error code
-//       }
-//       try {
-//         const airQualityResponse = await axios.get(`${BASE_URL}/2.5/air_pollution?lat=${latitude}&lon=${longitude}&appid=${API_KEY}`);
-//         setAirData(airQualityResponse.data);
-//         console.log('Air Quality Data Fetched Successfully !');
-//       } catch (error) {
-//         console.error('Error in getting air quality data', error);
-//         setStatusCode(404); // Set error code
-//       }
-        setData(tempData);
-        setAirData(tempAirData);
+      try {
+        const weatherResponse = await axios.get(`${BASE_URL}/3.0/onecall?lat=${latitude}&lon=${longitude}&units=metric&exclude=minutely&appid=${API_KEY}`);
+        setData(weatherResponse.data);
+        console.log('Weather Data Fetched Successfully !');
+      } catch (error) {
+        console.error('Error in getting weather data', error);
+        setStatusCode(404); // Set error code
+      }
+      try {
+        const airQualityResponse = await axios.get(`${BASE_URL}/2.5/air_pollution?lat=${latitude}&lon=${longitude}&appid=${API_KEY}`);
+        setAirData(airQualityResponse.data);
+        console.log('Air Quality Data Fetched Successfully !');
+      } catch (error) {
+        console.error('Error in getting air quality data', error);
+        setStatusCode(404); // Set error code
+      }
+//         setData(tempData);
+//         setAirData(tempAirData);
     };
     fetchData();
   }, [latitude, longitude]);

@@ -28,7 +28,7 @@ export default function SensorData(props){
     ]
     const [ sensor, setSensor ] = useState(sensorIds[0].label); // sensor name
     const [ sensorMode, setSensorMode ] = useState(0); // sensor mode code
-    const [ sensorId, setSensorId ] = useState(0); // sensor id
+    const [ sensorId, setSensorId ] = useState(1); // sensor id
 
     const options = [
         { label: "01", value: 1, activeColor: 'black' },
